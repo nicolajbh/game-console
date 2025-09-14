@@ -1,0 +1,15 @@
+C:\Users\nicol\dev\school\semester1\game-console\bin\Debug\net9.0\game-console.exe
+C:\Users\nicol\dev\school\semester1\game-console\bin\Debug\net9.0\game-console.deps.json
+C:\Users\nicol\dev\school\semester1\game-console\bin\Debug\net9.0\game-console.runtimeconfig.json
+C:\Users\nicol\dev\school\semester1\game-console\bin\Debug\net9.0\game-console.dll
+C:\Users\nicol\dev\school\semester1\game-console\bin\Debug\net9.0\game-console.pdb
+C:\Users\nicol\dev\school\semester1\game-console\obj\Debug\net9.0\game-console.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\nicol\dev\school\semester1\game-console\obj\Debug\net9.0\game-console.AssemblyInfoInputs.cache
+C:\Users\nicol\dev\school\semester1\game-console\obj\Debug\net9.0\game-console.AssemblyInfo.cs
+C:\Users\nicol\dev\school\semester1\game-console\obj\Debug\net9.0\game-console.csproj.CoreCompileInputs.cache
+C:\Users\nicol\dev\school\semester1\game-console\obj\Debug\net9.0\game-console.sourcelink.json
+C:\Users\nicol\dev\school\semester1\game-console\obj\Debug\net9.0\game-console.dll
+C:\Users\nicol\dev\school\semester1\game-console\obj\Debug\net9.0\refint\game-console.dll
+C:\Users\nicol\dev\school\semester1\game-console\obj\Debug\net9.0\game-console.pdb
+C:\Users\nicol\dev\school\semester1\game-console\obj\Debug\net9.0\game-console.genruntimeconfig.cache
+C:\Users\nicol\dev\school\semester1\game-console\obj\Debug\net9.0\ref\game-console.dll
