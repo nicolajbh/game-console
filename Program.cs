@@ -41,20 +41,25 @@
     while (healthPlayerOne <= 0 || healthPlayerTwo <= 0)
     {
       PrintGame(playerNames, healthPlayerOne, healthPlayerTwo);
-      int answer = GetRandomNumber(1, 100);
-      int damage = GetRandomNumber(10, 20);
       int[] guesses = GetUserGuess(playerNames, numPlayers);
       if (playerNames[1] == "Computer")
       {
         Console.WriteLine($"{playerNames[1]} guesses {guesses[1]}");
       }
       Thread.Sleep(2000);
-      Console.WriteLine($"The answer was {answer}.");
-
-      ApplyDamage(playerNames, guesses, answer, damage, ref healthPlayerOne, ref healthPlayerTwo);
+      ApplyDamage(playerNames, guesses, ref healthPlayerOne, ref healthPlayerTwo);
       Console.ReadKey();
-      // TODO Add play again
     }
+    if (healthPlayerOne > healthPlayerTwo)
+    {
+      Console.WriteLine($"{playerNames[0]} won!");
+    }
+    else
+    {
+      Console.WriteLine($"{playerNames[1]} won!");
+    }
+    // TODO Add play again
+    // PlayAgain();
   }
 
   static int GetNumPlayers()
@@ -156,8 +161,12 @@
     Console.WriteLine($"Health {playerNames[1]}: {healthPlayerTwo}");
   }
 
-  static void ApplyDamage(string[] playerNames, int[] guesses, int answer, int damage, ref int healthPlayerOne, ref int healthPlayerTwo)
+  static void ApplyDamage(string[] playerNames, int[] guesses, ref int healthPlayerOne, ref int healthPlayerTwo)
   {
+    int answer = GetRandomNumber(1, 100);
+    Console.WriteLine($"The answer was {answer}");
+
+    int damage = GetRandomNumber(10, 20);
     if (Math.Abs(guesses[0] - answer) < Math.Abs(guesses[1] - answer))
     {
       Console.WriteLine($"{playerNames[0]} was closer and does {damage} damage!");
@@ -173,4 +182,9 @@
       Console.WriteLine("Tie!");
     }
   }
+
+  // static void PlayAgain()
+  // {
+  //
+  // }
 }
