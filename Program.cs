@@ -6,6 +6,7 @@
     var gameMenu = new Dictionary<string, Action>
     {
       { "Number battle", PlayNumberGame},
+      { "Kryds & Bolle", XO },
       { "Exit", () => Environment.Exit(0) }
     };
     var menuTitles = gameMenu.Keys.ToArray();
@@ -23,6 +24,23 @@
     Thread.Sleep(2000); // simulate game loading
     gameMenu[menuTitles[index]]();
   }
+  
+  static void XO()
+    {
+        Console.Clear();
+        Console.WriteLine("""
+            XOXOXOXOXOXOXOXOXOXO
+
+               KRYDS & BOLLE!
+
+            XOXOXOXOXOXOXOXOXOXO
+
+            Dette er et spil der går ud på at få tre på stribe før din modstander. Din modstander og dig skal skiftevist placerer jeres brikker indtil alle seks er blevet placeret. Er spillet endnu ikke afgjort skiftes spillerne til at vælge en af deres brikker og flytte den til et af de tomme felter på brættet. Spillet er slut når du eller din modstander løkkes med at få tre brikker på stribe.
+
+            Din modstander {randomBotName} har udfordret dig. Tryk ENTER for at få dine brikker...
+            
+            """);
+    }
 
   // ==================================================
   // Number guessing battle??
