@@ -9,17 +9,16 @@
       { "Exit", () => Environment.Exit(0) }
     };
     var menuTitles = gameMenu.Keys.ToArray();
-    PrintWelcomeScreen();
-    Console.ReadKey();
-    Console.WriteLine("Hello world!!!!");
     int index = 0;
+    PrintWelcomeScreen();
     while (true)
     {
       PrintMenu(menuTitles, index);
       int result = MenuSelect(menuTitles, index);
-      if (result == index) break;
+      if (result == -1) break;
       index = result;
     }
+    gameMenu[menuTitles[index]]();
   }
 
 
@@ -114,6 +113,7 @@
   {
     Console.Clear();
     Console.WriteLine("Velkommen til Matias og Nicolaj's spillekonsol");
+    Console.ReadKey();
   }
 
   static void PrintMenu(string[] menuTitles, int currentIndex)
@@ -140,7 +140,7 @@
     {
       ConsoleKey.UpArrow => Math.Max(0, currentIndex - 1),
       ConsoleKey.DownArrow => Math.Min(menuTitles.Length - 1, currentIndex + 1),
-      ConsoleKey.Enter => currentIndex,
+      ConsoleKey.Enter => -1,
       _ => currentIndex,
     };
   }
