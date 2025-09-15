@@ -18,6 +18,9 @@
       if (result == -1) break;
       index = result;
     }
+    Console.Clear();
+    Console.WriteLine($"Starting {menuTitles[index]}");
+    Thread.Sleep(2000); // simulate game loading
     gameMenu[menuTitles[index]]();
   }
 
@@ -29,10 +32,8 @@
   static void PlayNumberGame()
   {
     // TODO add ascii art
-    // TODO add difficulty - tighten rnd params
-    Console.Clear();
-    Console.WriteLine("Starting number game...");
-    Thread.Sleep(2000);
+    // TODO alternate who starts each turn
+    // TODO add difficulty - tighten rnd params/increased damage?
     Console.Clear();
 
     // game set up variables
@@ -78,10 +79,8 @@
     {
       Console.Write("Enter number of players (1-2): ");
       string input = Console.ReadLine() ?? "";
-      if (int.TryParse(input, out int numPlayers))
-      {
-        if (numPlayers == 1 || numPlayers == 2) return numPlayers;
-      }
+      if (int.TryParse(input, out int numPlayers)) continue;
+      if (numPlayers == 1 || numPlayers == 2) return numPlayers;
     }
   }
 
@@ -159,18 +158,16 @@
   /// </summary>
   static void PrintMenu(string[] menuTitles, int currentIndex)
   {
+    Console.Clear();
+    for (int i = 0; i < menuTitles.Length; i++)
     {
-      Console.Clear();
-      for (int i = 0; i < menuTitles.Length; i++)
+      if (i == currentIndex)
       {
-        if (i == currentIndex)
-        {
-          Console.WriteLine($"> {menuTitles[i]}");
-        }
-        else
-        {
-          Console.WriteLine(menuTitles[i]);
-        }
+        Console.WriteLine($"> {menuTitles[i]}");
+      }
+      else
+      {
+        Console.WriteLine(menuTitles[i]);
       }
     }
   }
