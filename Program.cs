@@ -21,6 +21,10 @@
     gameMenu[menuTitles[index]]();
   }
 
+  // ==================================================
+  // Number guessing battle??
+  // Af: Nicolaj
+  // ==================================================
 
   static void PlayNumberGame()
   {
@@ -39,7 +43,7 @@
     int healthPlayerTwo = 100;
 
     // gameplay loop
-    while (healthPlayerOne <= 0 || healthPlayerTwo <= 0)
+    while (healthPlayerOne > 0 && healthPlayerTwo > 0)
     {
       PrintGame(playerNames, healthPlayerOne, healthPlayerTwo);
       int[] guesses = GetUserGuess(playerNames, numPlayers);
@@ -51,6 +55,7 @@
       ApplyDamage(playerNames, guesses, ref healthPlayerOne, ref healthPlayerTwo);
       Console.ReadKey(); // wait for user input to start next round
     }
+    Console.Clear();
     if (healthPlayerOne > healthPlayerTwo)
     {
       Console.WriteLine($"{playerNames[0]} won!");
@@ -194,6 +199,7 @@
     Console.WriteLine($"Health {playerNames[0]}: {healthPlayerOne}");
     Console.WriteLine($"Health {playerNames[1]}: {healthPlayerTwo}");
   }
+
   /// <summary>
   /// Calculate distance between answer and guesses
   /// Decrements player health by random integer between 10 and 20 for player who was furthest from answer
