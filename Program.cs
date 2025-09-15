@@ -4,26 +4,25 @@
 
   public static void Main(string[] args)
   {
-    // Menu for selecting games
     var gameMenu = new Dictionary<string, Action>
     {
       { "Number battle", PlayNumberGame},
       { "Exit", () => Environment.Exit(0) }
     };
     var menuTitles = gameMenu.Keys.ToArray();
-    int index = 0;
+    int selectedIndex = 0;
     PrintWelcomeScreen();
     while (true)
     {
-      PrintMenu(menuTitles, index);
-      int result = MenuSelect(menuTitles, index);
-      if (result == -1) break;
-      index = result;
+      PrintMenu(menuTitles, selectedIndex);
+      int result = MenuSelect(menuTitles, selectedIndex);
+      if (result == -1) break; // user made selection, exit menu loop
+      selectedIndex = result;
     }
     Console.Clear();
-    Console.WriteLine($"Starting {menuTitles[index]}");
+    Console.WriteLine($"Starting {menuTitles[selectedIndex]}");
     Thread.Sleep(2000); // simulate game loading
-    gameMenu[menuTitles[index]]();
+    gameMenu[menuTitles[selectedIndex]]();
   }
 
   // ==================================================
@@ -38,14 +37,12 @@
     // TODO add difficulty - tighten rnd params/increased damage?
     Console.Clear();
 
-    // game set up variables
     int numPlayers = GetNumPlayers();
     string[] playerNames = GetPlayerNames(numPlayers);
 
     int healthPlayerOne = 100;
     int healthPlayerTwo = 100;
 
-    // gameplay loop
     while (healthPlayerOne > 0 && healthPlayerTwo > 0)
     {
       PrintGame(playerNames, healthPlayerOne, healthPlayerTwo);
@@ -54,7 +51,7 @@
       {
         Console.WriteLine($"{playerNames[1]} guesses {guesses[1]}");
       }
-      Thread.Sleep(2000);
+      Thread.Sleep(2000); // delay before revealing answer
       ApplyDamage(playerNames, guesses, ref healthPlayerOne, ref healthPlayerTwo);
       Console.ReadKey(); // wait for user input to start next round
     }
@@ -74,7 +71,7 @@
   /// <summary>
   /// Prompts user for number of players
   /// </summary>
-  /// <returns> int 1 || int 2 </returns>
+  /// <returns> 1 for single player, 2 for two players </returns>
   static int GetNumPlayers()
   {
     while (true)
@@ -130,7 +127,7 @@
         }
       }
     }
-    if (numPlayers == 1) guesses[1] = rnd.Next(1, 100);
+    if (numPlayers == 1) guesses[1] = rnd.Next(1, 101); // assign the computer a guess
     return guesses;
   }
 
@@ -195,16 +192,19 @@
   /// </summary>
   static void ApplyDamage(string[] playerNames, int[] guesses, ref int healthPlayerOne, ref int healthPlayerTwo)
   {
-    int answer = rnd.Next(1, 100);
+    int answer = rnd.Next(1, 101);
     Console.WriteLine($"The answer was {answer}");
 
     int damage = rnd.Next(10, 20);
-    if (Math.Abs(guesses[0] - answer) < Math.Abs(guesses[1] - answer))
+    // calculate guess distance from answer
+    int player1Distance = Math.Abs(guesses[0] - answer);
+    int player2Distance = Math.Abs(guesses[1] - answer);
+    if (player1Distance < player2Distance)
     {
       Console.WriteLine($"{playerNames[0]} was closer and does {damage} damage!");
       healthPlayerTwo -= damage;
     }
-    else if (Math.Abs(guesses[0] - answer) > Math.Abs(guesses[1] - answer))
+    else if (player1Distance > player2Distance)
     {
       Console.WriteLine($"{playerNames[1]} was closer and does {damage} damage!");
       healthPlayerOne -= damage;
