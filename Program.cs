@@ -1,5 +1,7 @@
 ﻿internal class Program
 {
+  static Random rnd = new();
+
   public static void Main(string[] args)
   {
     // Menu for selecting games
@@ -79,8 +81,8 @@
     {
       Console.Write("Enter number of players (1-2): ");
       string input = Console.ReadLine() ?? "";
-      if (int.TryParse(input, out int numPlayers)) continue;
-      if (numPlayers == 1 || numPlayers == 2) return numPlayers;
+      if (!int.TryParse(input, out int numPlayers)) continue;
+      if (numPlayers is 1 or 2) return numPlayers;
     }
   }
 
@@ -100,21 +102,11 @@
         Console.Write($"Name of player {i + 1}: ");
         input = Console.ReadLine() ?? "";
       }
-      while (input == "");
+      while (string.IsNullOrWhiteSpace(input));
       players[i] = input;
     }
     if (numPlayers == 1) players[1] = "Computer";
     return players;
-  }
-
-  /// <summary>
-  /// Generates random integer 
-  /// </summary>
-  /// <returns> int between i and j </returns>
-  static int GetRandomNumber(int i, int j)
-  {
-    Random rnd = new();
-    return rnd.Next(i, j);
   }
 
   /// <summary>
@@ -138,7 +130,7 @@
         }
       }
     }
-    if (numPlayers == 1) guesses[1] = GetRandomNumber(1, 100);
+    if (numPlayers == 1) guesses[1] = rnd.Next(1, 100);
     return guesses;
   }
 
@@ -203,10 +195,10 @@
   /// </summary>
   static void ApplyDamage(string[] playerNames, int[] guesses, ref int healthPlayerOne, ref int healthPlayerTwo)
   {
-    int answer = GetRandomNumber(1, 100);
+    int answer = rnd.Next(1, 100);
     Console.WriteLine($"The answer was {answer}");
 
-    int damage = GetRandomNumber(10, 20);
+    int damage = rnd.Next(10, 20);
     if (Math.Abs(guesses[0] - answer) < Math.Abs(guesses[1] - answer))
     {
       Console.WriteLine($"{playerNames[0]} was closer and does {damage} damage!");
