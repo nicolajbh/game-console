@@ -11,6 +11,7 @@
     var menuTitles = gameMenu.Keys.ToArray();
     PrintWelcomeScreen();
     Console.ReadKey();
+    Console.WriteLine("Hello world!!!!");
     int index = 0;
     while (true)
     {
