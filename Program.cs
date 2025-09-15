@@ -2,20 +2,55 @@
 {
   private static void Main(string[] args)
   {
+    // Menu for selecting games
+    string[] games = ["Game 1", "Game 2", "Game 3"];
     Console.Clear();
     Console.WriteLine("Velkommen til Matias og Nicolaj's spillekonsol");
-    Console.WriteLine("Tryk enter for at spille...");
     Console.ReadKey();
-    PlayNumberGame();
+    int index = 0;
+    while (true)
+    {
+      Console.Clear();
+      for (int i = 0; i < games.Length; i++)
+      {
+        if (i == index)
+        {
+          Console.WriteLine($"> {games[i]}");
+        }
+        else
+        {
+          Console.WriteLine(games[i]);
+        }
+
+      }
+      switch (Console.ReadKey().Key)
+      {
+        case ConsoleKey.UpArrow: // up arrow
+          index--;
+          break;
+        case ConsoleKey.DownArrow: // down arrow
+          index++;
+          break;
+        case ConsoleKey.Enter:
+          PlayNumberGame();
+          break;
+        default:
+          Console.WriteLine("Invalid key");
+          break;
+      }
+    }
   }
 
   static void PlayNumberGame()
   {
+    // TODO add ascii art
     Console.Clear();
     Console.WriteLine("Starting number game...");
     Thread.Sleep(2000);
     Console.Clear();
 
+    // TODO add second player functionality
+    // TODO add difficulty
     string namePlayerOne = GetPlayerName(1);
     string namePlayerTwo = "Computer";
 
@@ -56,6 +91,7 @@
         Console.WriteLine("Tie!");
       }
       Console.ReadKey();
+      // TODO Add play again
     }
   }
 
