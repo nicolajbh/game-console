@@ -1,45 +1,26 @@
 ﻿internal class Program
 {
-  private static void Main(string[] args)
+  public static void Main(string[] args)
   {
     // Menu for selecting games
-    string[] games = ["Game 1", "Game 2", "Game 3"];
-    Console.Clear();
-    Console.WriteLine("Velkommen til Matias og Nicolaj's spillekonsol");
+    var gameMenu = new Dictionary<string, Action>
+    {
+      { "Number battle", PlayNumberGame},
+      { "Exit", () => Environment.Exit(0) }
+    };
+    var menuTitles = gameMenu.Keys.ToArray();
+    PrintWelcomeScreen();
     Console.ReadKey();
     int index = 0;
     while (true)
     {
-      Console.Clear();
-      for (int i = 0; i < games.Length; i++)
-      {
-        if (i == index)
-        {
-          Console.WriteLine($"> {games[i]}");
-        }
-        else
-        {
-          Console.WriteLine(games[i]);
-        }
-
-      }
-      switch (Console.ReadKey().Key)
-      {
-        case ConsoleKey.UpArrow: // up arrow
-          index--;
-          break;
-        case ConsoleKey.DownArrow: // down arrow
-          index++;
-          break;
-        case ConsoleKey.Enter:
-          PlayNumberGame();
-          break;
-        default:
-          Console.WriteLine("Invalid key");
-          break;
-      }
+      PrintMenu(menuTitles, index);
+      int result = MenuSelect(menuTitles, index);
+      if (result == index) break;
+      index = result;
     }
   }
+
 
   static void PlayNumberGame()
   {
@@ -126,5 +107,40 @@
       }
     }
     return userGuess;
+  }
+
+  static void PrintWelcomeScreen()
+  {
+    Console.Clear();
+    Console.WriteLine("Velkommen til Matias og Nicolaj's spillekonsol");
+  }
+
+  static void PrintMenu(string[] menuTitles, int currentIndex)
+  {
+    {
+      Console.Clear();
+      for (int i = 0; i < menuTitles.Length; i++)
+      {
+        if (i == currentIndex)
+        {
+          Console.WriteLine($"> {menuTitles[i]}");
+        }
+        else
+        {
+          Console.WriteLine(menuTitles[i]);
+        }
+      }
+    }
+  }
+
+  static int MenuSelect(string[] menuTitles, int currentIndex)
+  {
+    return Console.ReadKey().Key switch
+    {
+      ConsoleKey.UpArrow => Math.Max(0, currentIndex - 1),
+      ConsoleKey.DownArrow => Math.Min(menuTitles.Length - 1, currentIndex + 1),
+      ConsoleKey.Enter => currentIndex,
+      _ => currentIndex,
+    };
   }
 }
