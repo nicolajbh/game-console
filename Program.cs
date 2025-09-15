@@ -31,6 +31,7 @@
     Thread.Sleep(2000);
     Console.Clear();
 
+    // game set up variables
     int numPlayers = GetNumPlayers();
     string[] playerNames = GetPlayerNames(numPlayers);
 
@@ -48,7 +49,7 @@
       }
       Thread.Sleep(2000);
       ApplyDamage(playerNames, guesses, ref healthPlayerOne, ref healthPlayerTwo);
-      Console.ReadKey();
+      Console.ReadKey(); // wait for user input to start next round
     }
     if (healthPlayerOne > healthPlayerTwo)
     {
@@ -62,6 +63,10 @@
     // PlayAgain();
   }
 
+  /// <summary>
+  /// Prompts user for number of players
+  /// </summary>
+  /// <returns> int 1 || int 2 </returns>
   static int GetNumPlayers()
   {
     while (true)
@@ -74,6 +79,12 @@
       }
     }
   }
+
+  /// <summary>
+  /// Prompts user for player names
+  /// If number of players is 1, "Computer" is added as second player
+  /// </summary>
+  /// <returns> Array of strings of names of the players </returns>
   static string[] GetPlayerNames(int numPlayers)
   {
     string[] players = new string[2];
@@ -92,12 +103,21 @@
     return players;
   }
 
+  /// <summary>
+  /// Generates random integer 
+  /// </summary>
+  /// <returns> int between i and j </returns>
   static int GetRandomNumber(int i, int j)
   {
     Random rnd = new();
     return rnd.Next(i, j);
   }
 
+  /// <summary>
+  /// Prompts users for guesses
+  /// If number of players is 1, second guess is a random integer between 1 and 100
+  /// </summary>
+  /// <returns> array of guesses </returns>
   static int[] GetUserGuess(string[] playerNames, int numPlayers)
   {
     int[] guesses = new int[2];
@@ -118,6 +138,9 @@
     return guesses;
   }
 
+  /// <summary>
+  /// Outputs welcome graphics to console
+  /// </summary>
   static void PrintWelcomeScreen()
   {
     Console.Clear();
@@ -125,6 +148,10 @@
     Console.ReadKey();
   }
 
+  /// <summary>
+  /// Loops through menu titles and prints to console
+  /// Adds arrow to item currently selected from menu
+  /// </summary>
   static void PrintMenu(string[] menuTitles, int currentIndex)
   {
     {
@@ -143,6 +170,10 @@
     }
   }
 
+  /// <summary>
+  /// Reads key presses for selecting menu items
+  /// </summary>
+  /// <returns> New index for selector or -1 for enter </returns>
   static int MenuSelect(string[] menuTitles, int currentIndex)
   {
     return Console.ReadKey().Key switch
@@ -154,13 +185,19 @@
     };
   }
 
+  /// <summary>
+  /// Prints the game graphics to console
+  /// </summary>
   static void PrintGame(string[] playerNames, int healthPlayerOne, int healthPlayerTwo)
   {
     Console.Clear();
     Console.WriteLine($"Health {playerNames[0]}: {healthPlayerOne}");
     Console.WriteLine($"Health {playerNames[1]}: {healthPlayerTwo}");
   }
-
+  /// <summary>
+  /// Calculate distance between answer and guesses
+  /// Decrements player health by random integer between 10 and 20 for player who was furthest from answer
+  /// </summary>
   static void ApplyDamage(string[] playerNames, int[] guesses, ref int healthPlayerOne, ref int healthPlayerTwo)
   {
     int answer = GetRandomNumber(1, 100);
