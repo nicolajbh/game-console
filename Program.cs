@@ -79,7 +79,7 @@
     {
       Console.Write("Enter number of players (1-2): ");
       string input = Console.ReadLine() ?? "";
-      if (int.TryParse(input, out int numPlayers)) continue;
+      if (!int.TryParse(input, out int numPlayers)) continue;
       if (numPlayers == 1 || numPlayers == 2) return numPlayers;
     }
   }
