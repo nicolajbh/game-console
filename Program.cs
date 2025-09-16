@@ -45,7 +45,12 @@ internal class Program
   // ==================================================
   static void XO()
   {
-    char playerSymbol;
+        char playerSymbol;
+        string tokenX = "X";
+        string tokenO = "O";
+        string tokenPipe = "| ";
+        string tokenEmDash = "— ";
+        string tokenSpace = "  ";
 
     Console.Clear();
     Console.WriteLine("""
@@ -83,14 +88,38 @@ internal class Program
       default:
         break;
 
+    };
+
+        Console.Clear();
+        Console.WriteLine("""
+            XOXOXOXOXOXOXOXOXOXO
+
+               KRYDS & BOLLE!
+
+            XOXOXOXOXOXOXOXOXOXO
+
+            """);
+
+        string[,] gameBoard =
+        {
+            { tokenSpace, tokenEmDash,  tokenEmDash, tokenEmDash, tokenEmDash, tokenEmDash, tokenSpace },
+            { tokenPipe, tokenSpace, tokenPipe, tokenSpace, tokenPipe, tokenSpace, tokenPipe },
+            { tokenPipe, tokenEmDash,  tokenEmDash, tokenEmDash, tokenEmDash, tokenEmDash, tokenPipe },
+            { tokenPipe, tokenSpace, tokenPipe, tokenSpace, tokenPipe, tokenSpace, tokenPipe },
+            { tokenPipe, tokenEmDash,  tokenEmDash, tokenEmDash, tokenEmDash, tokenEmDash, tokenPipe },
+            { tokenPipe, tokenSpace, tokenPipe, tokenSpace, tokenPipe, tokenSpace, tokenPipe },
+            { tokenSpace, tokenEmDash,  tokenEmDash, tokenEmDash, tokenEmDash, tokenEmDash, tokenSpace }
+        };
+        
+        for (int i = 0; i < gameBoard.GetLength(0); i++)
+        {
+            for (int j = 0; j < gameBoard.GetLength(1); j++)
+            {
+                Console.Write(gameBoard[i, j]);
+            };
+            Console.WriteLine();
+        };
     }
-    ;
-
-
-
-
-
-  }
 
   // ==================================================
   // Number guessing battle??
