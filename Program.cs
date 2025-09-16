@@ -45,12 +45,12 @@ internal class Program
   // ==================================================
   static void XO()
   {
-        char playerSymbol;
-        string tokenX = "X";
-        string tokenO = "O";
-        string tokenPipe = "| ";
-        string tokenEmDash = "— ";
-        string tokenSpace = "  ";
+    char playerSymbol;
+    string tokenX = "X";
+    string tokenO = "O";
+    string tokenPipe = "| ";
+    string tokenEmDash = "— ";
+    string tokenSpace = "  ";
 
     Console.Clear();
     Console.WriteLine("""
@@ -88,10 +88,11 @@ internal class Program
       default:
         break;
 
-    };
+    }
+    ;
 
-        Console.Clear();
-        Console.WriteLine("""
+    Console.Clear();
+    Console.WriteLine("""
             XOXOXOXOXOXOXOXOXOXO
 
                KRYDS & BOLLE!
@@ -100,8 +101,8 @@ internal class Program
 
             """);
 
-        string[,] gameBoard =
-        {
+    string[,] gameBoard =
+    {
             { tokenSpace, tokenEmDash,  tokenEmDash, tokenEmDash, tokenEmDash, tokenEmDash, tokenSpace },
             { tokenPipe, tokenSpace, tokenPipe, tokenSpace, tokenPipe, tokenSpace, tokenPipe },
             { tokenPipe, tokenEmDash,  tokenEmDash, tokenEmDash, tokenEmDash, tokenEmDash, tokenPipe },
@@ -110,16 +111,18 @@ internal class Program
             { tokenPipe, tokenSpace, tokenPipe, tokenSpace, tokenPipe, tokenSpace, tokenPipe },
             { tokenSpace, tokenEmDash,  tokenEmDash, tokenEmDash, tokenEmDash, tokenEmDash, tokenSpace }
         };
-        
-        for (int i = 0; i < gameBoard.GetLength(0); i++)
-        {
-            for (int j = 0; j < gameBoard.GetLength(1); j++)
-            {
-                Console.Write(gameBoard[i, j]);
-            };
-            Console.WriteLine();
-        };
+
+    for (int i = 0; i < gameBoard.GetLength(0); i++)
+    {
+      for (int j = 0; j < gameBoard.GetLength(1); j++)
+      {
+        Console.Write(gameBoard[i, j]);
+      }
+      ;
+      Console.WriteLine();
     }
+    ;
+  }
 
   // ==================================================
   // Number guessing battle??
@@ -132,6 +135,16 @@ internal class Program
     // TODO alternate who starts each turn
     // TODO powerups? critical hits? damage multipliers?
     PrintIntroScreen();
+    while (true)
+    {
+      NumberGame();
+      if (PlayAgain() == 0) break; // user selected N
+    }
+    ShowMainMenu();
+  }
+
+  static void NumberGame()
+  {
     Console.Clear();
 
     int numPlayers = GetNumPlayers();
@@ -152,6 +165,11 @@ internal class Program
       ApplyDamage(playerNames, guesses, ref healthPlayerOne, ref healthPlayerTwo);
       Console.ReadKey(); // wait for user input to start next round
     }
+    PrintWinner(playerNames, healthPlayerOne, healthPlayerTwo);
+  }
+
+  static void PrintWinner(string[] playerNames, int healthPlayerOne, int healthPlayerTwo)
+  {
     Console.Clear();
     if (healthPlayerOne > healthPlayerTwo)
     {
@@ -161,8 +179,7 @@ internal class Program
     {
       Console.WriteLine($"{playerNames[1]} won!");
     }
-    // TODO Add play again
-    // PlayAgain();
+    Console.ReadKey();
   }
 
   /// <summary>
@@ -362,9 +379,28 @@ internal class Program
     Console.WriteLine("Press any key to continue...");
     Console.ReadKey();
   }
-  // static void PlayAgain()
-  // {
-  //
-  // }
-  //
+
+  static int PlayAgain()
+  {
+    Console.Clear();
+    Console.Write("Play Again? (Y/N): ");
+    string input;
+    while (true)
+    {
+      input = Console.ReadLine() ?? "";
+      if (input == "Y" || input == "N")
+      {
+        break;
+      }
+    }
+    switch (input)
+    {
+      case "Y":
+        return 1;
+      case "N":
+        return 0;
+      default:
+        return -1;
+    }
+  }
 }
