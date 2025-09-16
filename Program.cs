@@ -38,14 +38,34 @@ internal class Program
     // Kryds & Bolle
     // Af: Matias
     // ==================================================
-    static void XO()
+    public static void XO()
   {
-        char playerSymbol;
+        string playerToken; //Gemmer menneskespillerens type af spilbrik.
+        string userInput;
+        string[,] gameBoard = //Opretter spilbrættet som en matrix.
+{
+            { "Z", " ", " " },
+            { " ", " ", " " },
+            { " ", " ", " " }
+        };
+
+        //Alphabetiske kolonner og numeriske rækker.
+        string a1 = gameBoard[0, 0];
+        string a2 = gameBoard[0, 1];
+        string a3 = gameBoard[0, 2];
+        string b1 = gameBoard[1, 0];
+        string b2 = gameBoard[1, 1];
+        string b3 = gameBoard[1, 2];
+        string c1 = gameBoard[2, 0];
+        string c2 = gameBoard[2, 1];
+        string c3 = gameBoard[2, 2];
+
+        //Spilbrikker.
         string tokenX = "X";
         string tokenO = "O";
-        string tokenPipe = "| ";
-        string tokenEmDash = "— ";
-        string tokenSpace = "  ";
+
+        int x;
+        int y;
 
         Console.Clear();
         Console.WriteLine("""
@@ -71,13 +91,13 @@ internal class Program
 
             """);
 
-        playerSymbol = rnd.Next(0, 2) == 0 ? 'X' : 'O';
-        switch (playerSymbol)
+        playerToken = rnd.Next(0, 2) == 0 ? "X" : "O"; //Tilfældig tildeling af type spilbrik til menneskespilleren.
+        switch (playerToken)
         {
-            case 'X':
+            case "X":
                 Console.WriteLine("Du har fået tildelt X brikkerne. Derfor skal du placerer den første brik. Tryk ENTER for at begynde spillet...\"");
                 break;
-            case 'O':
+            case "O":
                 Console.WriteLine("Du har fået tildelt O brikkerne. Derfor skal {randomBotName} placerer den første brik. Tryk ENTER for at begynde spillet...");
                 break;
             default:
@@ -95,26 +115,55 @@ internal class Program
 
             """);
 
-        string[,] gameBoard =
+
+        //Symboler brugt til at bygge spilbrætrammen.
+        string borderPipe = "| ";
+        string borderEmDash = "— ";
+        string borderSpace = "  ";
+
+        // Indsætter spilbrættet i en ramme.
+        string[,] gameBorders =
         {
-            { tokenSpace, tokenEmDash,  tokenEmDash, tokenEmDash, tokenEmDash, tokenEmDash, tokenSpace },
-            { tokenPipe, tokenSpace, tokenPipe, tokenSpace, tokenPipe, tokenSpace, tokenPipe },
-            { tokenPipe, tokenEmDash,  tokenEmDash, tokenEmDash, tokenEmDash, tokenEmDash, tokenPipe },
-            { tokenPipe, tokenSpace, tokenPipe, tokenSpace, tokenPipe, tokenSpace, tokenPipe },
-            { tokenPipe, tokenEmDash,  tokenEmDash, tokenEmDash, tokenEmDash, tokenEmDash, tokenPipe },
-            { tokenPipe, tokenSpace, tokenPipe, tokenSpace, tokenPipe, tokenSpace, tokenPipe },
-            { tokenSpace, tokenEmDash,  tokenEmDash, tokenEmDash, tokenEmDash, tokenEmDash, tokenSpace }
+            { borderSpace, borderEmDash,  borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderSpace },
+            { borderPipe, a1 + " ", borderPipe, a2 + " ", borderPipe, a3 + " ", borderPipe },
+            { borderPipe, borderEmDash,  borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderPipe },
+            { borderPipe, b1 + " ", borderPipe, b2 + " ", borderPipe, b3 + " ", borderPipe },
+            { borderPipe, borderEmDash,  borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderPipe },
+            { borderPipe, c1 + " ", borderPipe, c2 + " ", borderPipe, c3 + " ", borderPipe },
+            { borderSpace, borderEmDash,  borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderSpace }
         };
-        
-        for (int i = 0; i < gameBoard.GetLength(0); i++)
+
+        updateBoard();
+
+        void updateBoard()
         {
-            for (int j = 0; j < gameBoard.GetLength(1); j++)
+            //Printer spilbræt og ramme ud til konsollen.
+            for (int i = 0; i < gameBorders.GetLength(0); i++)
             {
-                Console.Write(gameBoard[i, j]);
+                for (int j = 0; j < gameBorders.GetLength(1); j++)
+                {
+                    Console.Write(gameBorders[i, j]);
+                }
+                ;
+                Console.WriteLine();
             };
-            Console.WriteLine();
-        };
+        }
+
+        userInput = Console.ReadLine();
+
+        x = userInput[0] - 'a';
+        y = int.Parse(userInput[1].ToString()) - 1;
+
+        Console.WriteLine(x.ToString());
+        Console.WriteLine(y.ToString());
+
+        gameBoard[x, y] = playerToken;
+
+        Console.WriteLine(gameBoard[x, y]);
+
+        updateBoard();
     }
+
 
   // ==================================================
   // Number guessing battle??
