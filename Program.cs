@@ -6,6 +6,12 @@ internal class Program
 
   public static void Main(string[] args)
   {
+    PrintWelcomeScreen();
+    ShowMainMenu();
+  }
+
+  static void ShowMainMenu()
+  {
     var gameMenu = new Dictionary<string, Action>
     {
       { "Number Battle", PlayNumberGame},
@@ -14,7 +20,6 @@ internal class Program
     };
     var menuTitles = gameMenu.Keys.ToArray();
     int selectedIndex = 0;
-    PrintWelcomeScreen();
     while (true)
     {
       PrintMenu(menuTitles, selectedIndex);
@@ -34,16 +39,16 @@ internal class Program
     gameMenu[selectedGame]();
   }
 
-    // ==================================================
-    // Kryds & Bolle
-    // Af: Matias
-    // ==================================================
-    static void XO()
+  // ==================================================
+  // Kryds & Bolle
+  // Af: Matias
+  // ==================================================
+  static void XO()
   {
-        char playerSymbol;
+    char playerSymbol;
 
-        Console.Clear();
-        Console.WriteLine("""
+    Console.Clear();
+    Console.WriteLine("""
             XOXOXOXOXOXOXOXOXOXO
 
                KRYDS & BOLLE!
@@ -55,9 +60,9 @@ internal class Program
             Din modstander {randomBotName} har udfordret dig. Tryk ENTER for at få dine brikker...
             
             """);
-        Console.ReadKey();
-        Console.Clear();
-        Console.WriteLine("""
+    Console.ReadKey();
+    Console.Clear();
+    Console.WriteLine("""
             XOXOXOXOXOXOXOXOXOXO
 
                KRYDS & BOLLE!
@@ -66,20 +71,21 @@ internal class Program
 
             """);
 
-        playerSymbol = rnd.Next(0, 2) == 0 ? 'X' : 'O';
-        switch (playerSymbol)
-        {
-            case 'X':
-                Console.WriteLine("Du har fået tildelt X brikkerne. Derfor skal du placerer den første brik. Tryk ENTER for at begynde spillet...\"");
-                break;
-            case 'O':
-                Console.WriteLine("Du har fået tildelt O brikkerne. Derfor skal {randomBotName} placerer den første brik. Tryk ENTER for at begynde spillet...");
-                break;
-            default:
-                break;
+    playerSymbol = rnd.Next(0, 2) == 0 ? 'X' : 'O';
+    switch (playerSymbol)
+    {
+      case 'X':
+        Console.WriteLine("Du har fået tildelt X brikkerne. Derfor skal du placerer den første brik. Tryk ENTER for at begynde spillet...\"");
+        break;
+      case 'O':
+        Console.WriteLine("Du har fået tildelt O brikkerne. Derfor skal {randomBotName} placerer den første brik. Tryk ENTER for at begynde spillet...");
+        break;
+      default:
+        break;
 
-        };
-        
+    }
+    ;
+
 
 
 
