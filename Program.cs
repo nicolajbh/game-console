@@ -6,7 +6,7 @@
   {
     var gameMenu = new Dictionary<string, Action>
     {
-      { "Number battle", PlayNumberGame},
+      { "Number Battle", PlayNumberGame},
       { "Kryds & Bolle", XO },
       { "Exit", () => Environment.Exit(0) }
     };
@@ -21,9 +21,15 @@
       selectedIndex = result;
     }
     Console.Clear();
-    Console.WriteLine($"Starting {menuTitles[selectedIndex]}");
+    string selectedGame = menuTitles[selectedIndex];
+    Console.WriteLine(
+        selectedGame == "Exit"
+        ? "Exiting..."
+        : $"Starting {selectedGame}"
+        );
+
     Thread.Sleep(2000); // simulate game loading
-    gameMenu[menuTitles[selectedIndex]]();
+    gameMenu[selectedGame]();
   }
 
   static void XO()
@@ -52,7 +58,8 @@
   {
     // TODO add ascii art
     // TODO alternate who starts each turn
-    // TODO add difficulty - tighten rnd params/increased damage?
+    // TODO powerups? critical hits? damage multipliers?
+    PrintIntroScreen();
     Console.Clear();
 
     int numPlayers = GetNumPlayers();
@@ -151,11 +158,25 @@
 
   /// <summary>
   /// Outputs welcome graphics to console
+  /// Ascii art generated using https://patorjk.com/software/taag/
   /// </summary>
   static void PrintWelcomeScreen()
   {
     Console.Clear();
-    Console.WriteLine("Velkommen til Matias og Nicolaj's spillekonsol");
+    Console.WriteLine(@"====================================================================================================");
+    Console.WriteLine(@" /$$      /$$ /$$   /$$        /$$$$$$   /$$$$$$  /$$   /$$  /$$$$$$   /$$$$$$  /$$       /$$$$$$$$");
+    Console.WriteLine(@"| $$$    /$$$| $$$ | $$       /$$__  $$ /$$__  $$| $$$ | $$ /$$__  $$ /$$__  $$| $$      | $$_____/");
+    Console.WriteLine(@"| $$$$  /$$$$| $$$$| $$      | $$  \__/| $$  \ $$| $$$$| $$| $$  \__/| $$  \ $$| $$      | $$      ");
+    Console.WriteLine(@"| $$ $$/$$ $$| $$ $$ $$      | $$      | $$  | $$| $$ $$ $$|  $$$$$$ | $$  | $$| $$      | $$$$$   ");
+    Console.WriteLine(@"| $$  $$$| $$| $$  $$$$      | $$      | $$  | $$| $$  $$$$ \____  $$| $$  | $$| $$      | $$__/   ");
+    Console.WriteLine(@"| $$\  $ | $$| $$\  $$$      | $$    $$| $$  | $$| $$\  $$$ /$$  \ $$| $$  | $$| $$      | $$      ");
+    Console.WriteLine(@"| $$ \/  | $$| $$ \  $$      |  $$$$$$/|  $$$$$$/| $$ \  $$|  $$$$$$/|  $$$$$$/| $$$$$$$$| $$$$$$$$");
+    Console.WriteLine(@"|__/     |__/|__/  \__/       \______/  \______/ |__/  \__/ \______/  \______/ |________/|________/");
+    Console.WriteLine(@"====================================================================================================");
+    Console.WriteLine();
+    Console.WriteLine(@"                                  Welcome to the MNConsole v1.0!");
+    Console.WriteLine(@"====================================================================================================");
+    Console.WriteLine("                                      Press any key to start...");
     Console.ReadKey();
   }
 
@@ -177,6 +198,7 @@
         Console.WriteLine(menuTitles[i]);
       }
     }
+    Console.WriteLine("\nUse ↑/↓ arrows to navigate, Enter to select");
   }
 
   /// <summary>
@@ -200,8 +222,30 @@
   static void PrintGame(string[] playerNames, int healthPlayerOne, int healthPlayerTwo)
   {
     Console.Clear();
-    Console.WriteLine($"Health {playerNames[0]}: {healthPlayerOne}");
-    Console.WriteLine($"Health {playerNames[1]}: {healthPlayerTwo}");
+    // robot ascii art from https://www.asciiart.eu/electronics/robots
+    // alien ascii art from https://www.asciiart.eu/space/aliens
+    // combined using claude.ai
+    string[] robotVsAlien = {
+"                                                    o   o    ",
+            "                                                     )-(     ",
+            "                                                    (O O)    ",
+            "       __                                            \\=/     ",
+            "   _  |@@|                                          .-\"-.    ",
+            "  / \\ \\--/ __                                      //\\ /\\\\  ",
+            "  ) O|----|  |   __                              _// / \\ \\\\_",
+            " / / \\ }{ /\\ )_ / _\\                            =./ {,-.} \\.=",
+            " )/  /\\__/\\ \\__O (__)                               || ||   ",
+            "|/  (--/\\--)    \\__/                               || ||   ",
+            "/   _)(  )(_                                      __|| ||__ ",
+            "   `---''---`                                    `---\" \"---'"
+        };
+    foreach (string line in robotVsAlien)
+    {
+      Console.WriteLine(line);
+    }
+    Console.WriteLine($"     HP [{new string('#', (int)healthPlayerOne / 10).PadRight(10)}]                            HP [{new string('#', (int)healthPlayerTwo / 10).PadRight(10)}]");
+    Console.WriteLine($"             {playerNames[0]}                                   {playerNames[1]}");
+    Console.WriteLine();
   }
 
   /// <summary>
@@ -233,8 +277,22 @@
     }
   }
 
+  static void PrintIntroScreen()
+  {
+    Console.Clear();
+    Console.WriteLine("╔════════════════════════════════╗");
+    Console.WriteLine("║        NUMBER BATTLE!          ║");
+    Console.WriteLine("║                                ║");
+    Console.WriteLine("║ Guess closest to the random    ║");
+    Console.WriteLine("║ number to deal damage!         ║");
+    Console.WriteLine("╚════════════════════════════════╝");
+    Console.WriteLine();
+    Console.WriteLine("Press any key to continue...");
+    Console.ReadKey();
+  }
   // static void PlayAgain()
   // {
   //
   // }
+  //
 }
