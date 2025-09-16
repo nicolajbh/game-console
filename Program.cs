@@ -25,11 +25,11 @@
     Thread.Sleep(2000); // simulate game loading
     gameMenu[menuTitles[selectedIndex]]();
   }
-  
+
   static void XO()
-    {
-        Console.Clear();
-        Console.WriteLine("""
+  {
+    Console.Clear();
+    Console.WriteLine("""
             XOXOXOXOXOXOXOXOXOXO
 
                KRYDS & BOLLE!
@@ -41,7 +41,7 @@
             Din modstander {randomBotName} har udfordret dig. Tryk ENTER for at få dine brikker...
             
             """);
-    }
+  }
 
   // ==================================================
   // Number guessing battle??
@@ -145,7 +145,7 @@
         }
       }
     }
-    if (numPlayers == 1) guesses[1] = rnd.Next(1, 100); // assign the computer a guess
+    if (numPlayers == 1) guesses[1] = rnd.Next(1, 101); // assign the computer a guess
     return guesses;
   }
 
@@ -210,7 +210,7 @@
   /// </summary>
   static void ApplyDamage(string[] playerNames, int[] guesses, ref int healthPlayerOne, ref int healthPlayerTwo)
   {
-    int answer = rnd.Next(1, 100);
+    int answer = rnd.Next(1, 101);
     Console.WriteLine($"The answer was {answer}");
 
     int damage = rnd.Next(10, 20);
