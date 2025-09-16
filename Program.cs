@@ -1,4 +1,6 @@
-﻿internal class Program
+﻿using System.Reflection.Metadata.Ecma335;
+
+internal class Program
 {
   static Random rnd = new();
 
@@ -26,10 +28,16 @@
     gameMenu[menuTitles[selectedIndex]]();
   }
 
-  static void XO()
+    // ==================================================
+    // Kryds & Bolle
+    // Af: Matias
+    // ==================================================
+    static void XO()
   {
-    Console.Clear();
-    Console.WriteLine("""
+        char playerSymbol;
+
+        Console.Clear();
+        Console.WriteLine("""
             XOXOXOXOXOXOXOXOXOXO
 
                KRYDS & BOLLE!
@@ -41,6 +49,35 @@
             Din modstander {randomBotName} har udfordret dig. Tryk ENTER for at få dine brikker...
             
             """);
+        Console.ReadKey();
+        Console.Clear();
+        Console.WriteLine("""
+            XOXOXOXOXOXOXOXOXOXO
+
+               KRYDS & BOLLE!
+
+            XOXOXOXOXOXOXOXOXOXO
+
+            """);
+
+        playerSymbol = rnd.Next(0, 2) == 0 ? 'X' : 'O';
+        switch (playerSymbol)
+        {
+            case 'X':
+                Console.WriteLine("Du har fået tildelt X brikkerne. Derfor skal du placerer den første brik. Tryk ENTER for at begynde spillet...\"");
+                break;
+            case 'O':
+                Console.WriteLine("Du har fået tildelt O brikkerne. Derfor skal {randomBotName} placerer den første brik. Tryk ENTER for at begynde spillet...");
+                break;
+            default:
+                break;
+
+        };
+        
+
+
+
+
   }
 
   // ==================================================
