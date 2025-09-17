@@ -108,7 +108,7 @@ internal class Program
     string input;
     while (true)
     {
-      input = Console.ReadLine() ?? "";
+      input = (Console.ReadLine() ?? "").ToUpper();
       if (input == "Y" || input == "N") break;
     }
     return input switch
@@ -119,15 +119,15 @@ internal class Program
     };
   }
 
-// ==================================================
-// Kryds & Bolle
-// Af: Matias
-// ==================================================
-public static void XO()
-{ 
+  // ==================================================
+  // Kryds & Bolle
+  // Af: Matias
+  // ==================================================
+  public static void XO()
+  {
     string playerToken; //Gemmer menneskespillerens type af spilbrik.
     string userInput = "";
-    string[,] gameBoard = {{ " ", " ", " " },{ " ", " ", " " },{ " ", " ", " " }}; //Opretter spilbrættet som en matrix.
+    string[,] gameBoard = { { " ", " ", " " }, { " ", " ", " " }, { " ", " ", " " } }; //Opretter spilbrættet som en matrix.
     string tokenX = "X";
     string tokenO = "O";
     string msgWelcome = "Din modstander {randomBotName} har udfordret dig. Tryk ENTER for at få dine brikker...\n";
@@ -146,9 +146,9 @@ public static void XO()
     Console.WriteLine(
         (playerToken = rnd.Next(0, 2) == 0 ? "X" : "O") switch
         {
-            "X" => msgTokenX,
-            "O" => msgTokenO,
-            _ => "Ugyldig brik"
+          "X" => msgTokenX,
+          "O" => msgTokenO,
+          _ => "Ugyldig brik"
         }
     );
 
@@ -159,33 +159,33 @@ public static void XO()
 
     while (userInput != "q")
     {
-        userInput = Console.ReadLine();
+      userInput = Console.ReadLine();
 
-        if (userInput == "q")
-        {
-            break;
-        }
-        else
-        {
-            x = userInput[0] - 'a';
-            y = int.Parse(userInput[1].ToString()) - 1;
-            gameBoard[x, y] = playerToken;
-            updateBoard();
-        }
+      if (userInput == "q")
+      {
+        break;
+      }
+      else
+      {
+        x = userInput[0] - 'a';
+        y = int.Parse(userInput[1].ToString()) - 1;
+        gameBoard[x, y] = playerToken;
+        updateBoard();
+      }
     }
 
-        void updateBoard() // Renderer spilbrættets data i et indrammet spilbræt.
-        {
-            gameHeader();
-            
-            //Symboler brugt til at bygge spilbrætrammen.
-            string borderPipe = "| ";
-            string borderEmDash = "— ";
-            string borderSpace = "  ";
+    void updateBoard() // Renderer spilbrættets data i et indrammet spilbræt.
+    {
+      gameHeader();
 
-            // Indsætter spilbrættet i en ramme.
-            string[,] gameBorders =
-            {
+      //Symboler brugt til at bygge spilbrætrammen.
+      string borderPipe = "| ";
+      string borderEmDash = "— ";
+      string borderSpace = "  ";
+
+      // Indsætter spilbrættet i en ramme.
+      string[,] gameBorders =
+      {
                 { borderSpace, borderSpace, "1 ", borderSpace, "2 ", borderSpace, "3 ", borderSpace },
                 { borderSpace, borderSpace, borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderSpace },
                 { "a ", borderPipe, gameBoard[0, 0] + " ", borderPipe, gameBoard[0, 1] + " ", borderPipe, gameBoard[0, 2] + " ", borderPipe },
@@ -196,22 +196,23 @@ public static void XO()
                 { borderSpace, borderSpace, borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderSpace }
             };
 
-            //Printer spilbræt og ramme ud til konsollen.
-            for (int i = 0; i < gameBorders.GetLength(0); i++)
-            {
-                for (int j = 0; j < gameBorders.GetLength(1); j++)
-                {
-                    Console.Write(gameBorders[i, j]);
-                }
-                ;
-                Console.WriteLine();
-            };
-        }
-
-        void gameHeader() //Renderer spiltitlen
+      //Printer spilbræt og ramme ud til konsollen.
+      for (int i = 0; i < gameBorders.GetLength(0); i++)
+      {
+        for (int j = 0; j < gameBorders.GetLength(1); j++)
         {
-            Console.Clear();
-            Console.WriteLine("""
+          Console.Write(gameBorders[i, j]);
+        }
+          ;
+        Console.WriteLine();
+      }
+      ;
+    }
+
+    void gameHeader() //Renderer spiltitlen
+    {
+      Console.Clear();
+      Console.WriteLine("""
             XOXOXOXOXOXOXOXOXOXO
 
                KRYDS & BOLLE!
@@ -219,8 +220,9 @@ public static void XO()
             XOXOXOXOXOXOXOXOXOXO
 
             """);
-        };
     }
+    ;
+  }
 
 
   // ==================================================
@@ -442,22 +444,7 @@ public static void XO()
     int arrayWidth = 40;
     string[,] cellArray = InitializeArray(arrayHeight, arrayWidth);
 
-    // toad pattern
-    // cellArray[9, 19] = "██";
-    // cellArray[9, 20] = "██";
-    // cellArray[9, 21] = "██";
-    // cellArray[10, 18] = "██";
-    // cellArray[10, 19] = "██";
-    // cellArray[10, 20] = "██";
-
-    // glider pattern
-    cellArray[2, 4] = "██";
-    cellArray[3, 5] = "██";
-    cellArray[4, 3] = "██";
-    cellArray[4, 4] = "██";
-    cellArray[4, 5] = "██";
-
-
+    cellArray = SelectPattern(cellArray);
     while (!Console.KeyAvailable)
     {
       PrintCellArray(cellArray);
@@ -467,7 +454,7 @@ public static void XO()
         for (int j = 0; j < cellArray.GetLength(1); j++)
         {
           int neighbors = CountNeightbors(i, j, cellArray);
-          if (cellArray[i, j] == "  " && neighbors == 3)
+          if (cellArray[i, j] == "  " && neighbors == 3) // becomes live if dead and 3 neighbors
           {
             newArray[i, j] = "██";
           }
@@ -475,9 +462,9 @@ public static void XO()
           {
             newArray[i, j] = neighbors switch
             {
-              < 2 => "  ",
-              > 3 => "  ",
-              _ => "██",
+              < 2 => "  ", // dies if less than 2 neighbors
+              > 3 => "  ", // dies if more than 3 neighbors
+              _ => "██", // lives to next generation if 2-3 neighbors
             };
           }
         }
@@ -561,6 +548,42 @@ public static void XO()
       {
         cellArray[i, j] = "  ";
       }
+    }
+    return cellArray;
+  }
+
+  static string[,] SelectPattern(string[,] cellArray)
+  {
+
+    string[] patterns = ["Toad", "Glider"];
+    int currentIndex = 0;
+    while (true)
+    {
+      PrintMenu(patterns, currentIndex);
+      int result = MenuSelect(patterns, currentIndex);
+      if (result == -1) break; // user made selection, exit menu loop
+      currentIndex = result;
+    }
+
+    switch (currentIndex)
+    {
+      case 0: // toad pattern
+        cellArray[9, 19] = "██";
+        cellArray[9, 20] = "██";
+        cellArray[9, 21] = "██";
+        cellArray[10, 18] = "██";
+        cellArray[10, 19] = "██";
+        cellArray[10, 20] = "██";
+        break;
+      case 1: // glider pattern
+        cellArray[2, 4] = "██";
+        cellArray[3, 5] = "██";
+        cellArray[4, 3] = "██";
+        cellArray[4, 4] = "██";
+        cellArray[4, 5] = "██";
+        break;
+      default:
+        break;
     }
     return cellArray;
   }
