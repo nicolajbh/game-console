@@ -1,4 +1,5 @@
 ﻿using System.Reflection.Metadata.Ecma335;
+using System.Threading.Channels;
 
 internal class Program
 {
@@ -39,104 +40,78 @@ internal class Program
     // Af: Matias
     // ==================================================
     public static void XO()
-  {
+    { 
         string playerToken; //Gemmer menneskespillerens type af spilbrik.
-        string userInput;
-        string[,] gameBoard = //Opretter spilbrættet som en matrix.
-{
-            { "Z", " ", " " },
-            { " ", " ", " " },
-            { " ", " ", " " }
-        };
-
-        //Alphabetiske kolonner og numeriske rækker.
-        string a1 = gameBoard[0, 0];
-        string a2 = gameBoard[0, 1];
-        string a3 = gameBoard[0, 2];
-        string b1 = gameBoard[1, 0];
-        string b2 = gameBoard[1, 1];
-        string b3 = gameBoard[1, 2];
-        string c1 = gameBoard[2, 0];
-        string c2 = gameBoard[2, 1];
-        string c3 = gameBoard[2, 2];
-
-        //Spilbrikker.
+        string userInput = "";
+        string[,] gameBoard = {{ " ", " ", " " },{ " ", " ", " " },{ " ", " ", " " }}; //Opretter spilbrættet som en matrix.
         string tokenX = "X";
         string tokenO = "O";
-
+        string msgWelcome = "Din modstander {randomBotName} har udfordret dig. Tryk ENTER for at få dine brikker...\n";
+        string msgTokenX = "Du har fået kryds (X) derfor begynder du. Tryk ENTER for at begynde spillet...";
+        string msgTokenO = "Du har fået bolle (O) derfor begynder {randomBotName}. Tryk ENTER for at begynde spillet...";
         int x;
         int y;
 
-        Console.Clear();
-        Console.WriteLine("""
-            XOXOXOXOXOXOXOXOXOXO
+        // Velkomstbesked
+        gameHeader();
+        Console.WriteLine(msgWelcome);
 
-               KRYDS & BOLLE!
-
-            XOXOXOXOXOXOXOXOXOXO
-
-            Dette er et spil der går ud på at få tre på stribe før din modstander. Din modstander og dig skal skiftevist placerer jeres brikker indtil alle seks er blevet placeret. Er spillet endnu ikke afgjort skiftes spillerne til at vælge en af deres brikker og flytte den til et af de tomme felter på brættet. Spillet er slut når du eller din modstander løkkes med at få tre brikker på stribe.
-
-            Din modstander {randomBotName} har udfordret dig. Tryk ENTER for at få dine brikker...
-            
-            """);
+        // Tildeling af spilbrik 
         Console.ReadKey();
-        Console.Clear();
-        Console.WriteLine("""
-            XOXOXOXOXOXOXOXOXOXO
+        gameHeader();
+        Console.WriteLine(
+            (playerToken = rnd.Next(0, 2) == 0 ? "X" : "O") switch
+            {
+                "X" => msgTokenX,
+                "O" => msgTokenO,
+                _ => "Ugyldig brik"
+            }
+        );
 
-               KRYDS & BOLLE!
-
-            XOXOXOXOXOXOXOXOXOXO
-
-            """);
-
-        playerToken = rnd.Next(0, 2) == 0 ? "X" : "O"; //Tilfældig tildeling af type spilbrik til menneskespilleren.
-        switch (playerToken)
-        {
-            case "X":
-                Console.WriteLine("Du har fået tildelt X brikkerne. Derfor skal du placerer den første brik. Tryk ENTER for at begynde spillet...\"");
-                break;
-            case "O":
-                Console.WriteLine("Du har fået tildelt O brikkerne. Derfor skal {randomBotName} placerer den første brik. Tryk ENTER for at begynde spillet...");
-                break;
-            default:
-                break;
-
-        };
-
-        Console.Clear();
-        Console.WriteLine("""
-            XOXOXOXOXOXOXOXOXOXO
-
-               KRYDS & BOLLE!
-
-            XOXOXOXOXOXOXOXOXOXO
-
-            """);
-
-
-        //Symboler brugt til at bygge spilbrætrammen.
-        string borderPipe = "| ";
-        string borderEmDash = "— ";
-        string borderSpace = "  ";
-
-        // Indsætter spilbrættet i en ramme.
-        string[,] gameBorders =
-        {
-            { borderSpace, borderEmDash,  borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderSpace },
-            { borderPipe, a1 + " ", borderPipe, a2 + " ", borderPipe, a3 + " ", borderPipe },
-            { borderPipe, borderEmDash,  borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderPipe },
-            { borderPipe, b1 + " ", borderPipe, b2 + " ", borderPipe, b3 + " ", borderPipe },
-            { borderPipe, borderEmDash,  borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderPipe },
-            { borderPipe, c1 + " ", borderPipe, c2 + " ", borderPipe, c3 + " ", borderPipe },
-            { borderSpace, borderEmDash,  borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderSpace }
-        };
-
+        //Renderer et tomt startbræt
+        Console.ReadKey();
+        gameHeader();
         updateBoard();
 
-        void updateBoard()
+        while (userInput != "q")
         {
+            userInput = Console.ReadLine();
+
+            if (userInput == "q")
+            {
+                break;
+            }
+            else
+            {
+                x = userInput[0] - 'a';
+                y = int.Parse(userInput[1].ToString()) - 1;
+                gameBoard[x, y] = playerToken;
+                updateBoard();
+            }
+        }
+
+        void updateBoard() // Renderer spilbrættets data i en indrammet spilbræt.
+        {
+            gameHeader();
+            
+            //Symboler brugt til at bygge spilbrætrammen.
+            string borderPipe = "| ";
+            string borderEmDash = "— ";
+            string borderSpace = "  ";
+
+            // Indsætter spilbrættet i en ramme.
+            string[,] gameBorders =
+            {
+                { borderSpace, borderSpace, "1 ", borderSpace, "2 ", borderSpace, "3 ", borderSpace },
+                { borderSpace, borderSpace, borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderSpace },
+                { "a ", borderPipe, gameBoard[0, 0] + " ", borderPipe, gameBoard[0, 1] + " ", borderPipe, gameBoard[0, 2] + " ", borderPipe },
+                { borderSpace, borderPipe, borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderPipe },
+                { "b ", borderPipe, gameBoard[1, 0] + " ", borderPipe, gameBoard[1, 1] + " ", borderPipe, gameBoard[1, 2] + " ", borderPipe },
+                { borderSpace, borderPipe, borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderPipe },
+                { "c ", borderPipe, gameBoard[2, 0] + " ", borderPipe, gameBoard[2, 1] + " ", borderPipe, gameBoard[2, 2] + " ", borderPipe },
+                { borderSpace, borderSpace, borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderSpace }
+            };
+
             //Printer spilbræt og ramme ud til konsollen.
             for (int i = 0; i < gameBorders.GetLength(0); i++)
             {
@@ -149,19 +124,18 @@ internal class Program
             };
         }
 
-        userInput = Console.ReadLine();
+        void gameHeader() //Renderer spiltitlen
+        {
+            Console.Clear();
+            Console.WriteLine("""
+            XOXOXOXOXOXOXOXOXOXO
 
-        x = userInput[0] - 'a';
-        y = int.Parse(userInput[1].ToString()) - 1;
+               KRYDS & BOLLE!
 
-        Console.WriteLine(x.ToString());
-        Console.WriteLine(y.ToString());
+            XOXOXOXOXOXOXOXOXOXO
 
-        gameBoard[x, y] = playerToken;
-
-        Console.WriteLine(gameBoard[x, y]);
-
-        updateBoard();
+            """);
+        };
     }
 
 
