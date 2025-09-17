@@ -436,7 +436,7 @@
     cellArray[4, 5] = "██";
 
 
-    while (true)
+    while (!Console.KeyAvailable)
     {
       PrintCellArray(cellArray);
       string[,] newArray = InitializeArray(arrayHeight, arrayWidth);
@@ -461,7 +461,13 @@
         }
       }
       cellArray = newArray;
+      Console.WriteLine("\nPress any key to stop");
       Thread.Sleep(250);
+    }
+    if (Console.KeyAvailable)
+    {
+      Console.ReadKey(true);
+      Console.CursorVisible = true;
     }
   }
 
