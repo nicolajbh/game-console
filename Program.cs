@@ -452,29 +452,17 @@ internal class Program
       {
         for (int j = 0; j < cellArray.GetLength(1); j++)
         {
-          int neighbors = CountNeightbors(i, j, cellArray);
-          if (cellArray[i, j] == "  " && neighbors == 3) // becomes live if dead and 3 neighbors
-          {
-            newArray[i, j] = "██";
-          }
-          else if (cellArray[i, j] == "██")
-          {
-            newArray[i, j] = neighbors switch
-            {
-              < 2 => "  ", // dies if less than 2 neighbors
-              > 3 => "  ", // dies if more than 3 neighbors
-              _ => "██", // lives to next generation if 2-3 neighbors
-            };
-          }
+          int neighbors = CountNeighbors(i, j, cellArray);
+          newArray[i, j] = ApplyGameOfLifeRules(cellArray[i, j], neighbors);
         }
       }
       cellArray = newArray;
       Console.WriteLine("\nPress any key to stop");
-      Thread.Sleep(250);
+      Thread.Sleep(200);
     }
     if (Console.KeyAvailable)
     {
-      Console.ReadKey(true);
+      Console.ReadKey(true); // consume key
       Console.CursorVisible = true;
     }
   }
@@ -495,7 +483,7 @@ internal class Program
   }
 
   /// <summary>
-  /// Prints the cell array to console
+  /// Prints the cell array to console starting at Position 0, 0
   /// </summary>
   static void PrintCellArray(string[,] cellArray)
   {
@@ -513,7 +501,7 @@ internal class Program
   /// <summary>
   /// Counts number of live neighbors for cell[row, col]
   /// </summary>
-  static int CountNeightbors(int row, int col, string[,] cellArray)
+  static int CountNeighbors(int row, int col, string[,] cellArray)
   {
     int liveNeighbors = 0;
     for (int i = -1; i <= 1; i++)
@@ -535,7 +523,7 @@ internal class Program
   }
 
   /// <summary>
-  /// Creates array of size arrayHeight, arrayWidth and fills with "x"
+  /// Creates array of size arrayHeight, arrayWidth and fills with "  "
   /// </summary>
   /// <returns> returns array[arrayHeight, arrayWidth] </returns>
   static string[,] InitializeArray(int arrayHeight, int arrayWidth)
@@ -551,6 +539,11 @@ internal class Program
     return cellArray;
   }
 
+  /// <summary>
+  /// Let's user select a pattern from a predefined list of 4 common patterns
+  /// Prints the pattern to the console so user can preview it before selecting
+  /// </summary>
+  /// <returns> An array with the selected pattern </returns>
   static string[,] SelectPattern(int arrayHeight, int arrayWidth)
   {
     string[,] cellArray = InitializeArray(arrayHeight, arrayWidth);
@@ -582,7 +575,6 @@ internal class Program
           cellArray[12, 16] = "██";
           cellArray[12, 20] = "██";
           cellArray[12, 21] = "██";
-          cellArray[12, 21] = "██";
           cellArray[12, 22] = "██";
           break;
         case 3: // Lightweight Spaceship pattern
@@ -608,5 +600,18 @@ internal class Program
     }
     Console.Clear();
     return cellArray;
+  }
+
+  static string ApplyGameOfLifeRules(string currentCell, int neighbors)
+  {
+    if (currentCell == "  " && neighbors == 3) return "██"; // becomes live if dead and 3 neighbors
+    if (currentCell == "██")
+      return neighbors switch
+      {
+        < 2 => "  ", // dies if less than 2 neighbors
+        > 3 => "  ", // dies if more than 3 neighbors
+        _ => "██", // lives to next generation if 2-3 neighbors
+      };
+    return currentCell;
   }
 }
