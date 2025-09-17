@@ -7,15 +7,21 @@ internal class Program
 
   public static void Main(string[] args)
   {
+    PrintWelcomeScreen();
+    ShowMainMenu();
+  }
+
+  static void ShowMainMenu()
+  {
     var gameMenu = new Dictionary<string, Action>
     {
       { "Number Battle", PlayNumberGame},
       { "Kryds & Bolle", XO },
+      { "Game of Life", PlayGameOfLife},
       { "Exit", () => Environment.Exit(0) }
     };
     var menuTitles = gameMenu.Keys.ToArray();
     int selectedIndex = 0;
-    PrintWelcomeScreen();
     while (true)
     {
       PrintMenu(menuTitles, selectedIndex);
@@ -35,62 +41,140 @@ internal class Program
     gameMenu[selectedGame]();
   }
 
-    // ==================================================
-    // Kryds & Bolle
-    // Af: Matias
-    // ==================================================
-    public static void XO()
-    { 
-        string playerToken; //Gemmer menneskespillerens type af spilbrik.
-        string userInput = "";
-        string[,] gameBoard = {{ " ", " ", " " },{ " ", " ", " " },{ " ", " ", " " }}; //Opretter spilbrættet som en matrix.
-        string tokenX = "X";
-        string tokenO = "O";
-        string msgWelcome = "Din modstander {randomBotName} har udfordret dig. Tryk ENTER for at få dine brikker...\n";
-        string msgTokenX = "Du har fået kryds (X) derfor begynder du. Tryk ENTER for at begynde spillet...";
-        string msgTokenO = "Du har fået bolle (O) derfor begynder {randomBotName}. Tryk ENTER for at begynde spillet...";
-        int x;
-        int y;
+  /// <summary>
+  /// Outputs welcome graphics to console
+  /// Ascii art generated using https://patorjk.com/software/taag/
+  /// </summary>
+  static void PrintWelcomeScreen()
+  {
+    Console.Clear();
+    Console.WriteLine(@"====================================================================================================");
+    Console.WriteLine(@" /$$      /$$ /$$   /$$        /$$$$$$   /$$$$$$  /$$   /$$  /$$$$$$   /$$$$$$  /$$       /$$$$$$$$");
+    Console.WriteLine(@"| $$$    /$$$| $$$ | $$       /$$__  $$ /$$__  $$| $$$ | $$ /$$__  $$ /$$__  $$| $$      | $$_____/");
+    Console.WriteLine(@"| $$$$  /$$$$| $$$$| $$      | $$  \__/| $$  \ $$| $$$$| $$| $$  \__/| $$  \ $$| $$      | $$      ");
+    Console.WriteLine(@"| $$ $$/$$ $$| $$ $$ $$      | $$      | $$  | $$| $$ $$ $$|  $$$$$$ | $$  | $$| $$      | $$$$$   ");
+    Console.WriteLine(@"| $$  $$$| $$| $$  $$$$      | $$      | $$  | $$| $$  $$$$ \____  $$| $$  | $$| $$      | $$__/   ");
+    Console.WriteLine(@"| $$\  $ | $$| $$\  $$$      | $$    $$| $$  | $$| $$\  $$$ /$$  \ $$| $$  | $$| $$      | $$      ");
+    Console.WriteLine(@"| $$ \/  | $$| $$ \  $$      |  $$$$$$/|  $$$$$$/| $$ \  $$|  $$$$$$/|  $$$$$$/| $$$$$$$$| $$$$$$$$");
+    Console.WriteLine(@"|__/     |__/|__/  \__/       \______/  \______/ |__/  \__/ \______/  \______/ |________/|________/");
+    Console.WriteLine(@"====================================================================================================");
+    Console.WriteLine();
+    Console.WriteLine(@"                                  Welcome to the MNConsole v1.0!");
+    Console.WriteLine(@"====================================================================================================");
+    Console.WriteLine("                                      Press any key to start...");
+    Console.ReadKey();
+  }
 
-        // Velkomstbesked
-        gameHeader();
-        Console.WriteLine(msgWelcome);
+  /// <summary>
+  /// Loops through menu titles and prints to console
+  /// Adds arrow to item currently selected from menu
+  /// </summary>
+  static void PrintMenu(string[] menuTitles, int currentIndex)
+  {
+    Console.Clear();
+    for (int i = 0; i < menuTitles.Length; i++)
+    {
+      if (i == currentIndex)
+      {
+        Console.WriteLine($"> {menuTitles[i]}");
+      }
+      else
+      {
+        Console.WriteLine(menuTitles[i]);
+      }
+    }
+    Console.WriteLine("\nUse ^/v arrows to navigate, Enter to select");
+  }
 
-        // Tildeling af spilbrik 
-        Console.ReadKey();
-        gameHeader();
-        Console.WriteLine(
-            (playerToken = rnd.Next(0, 2) == 0 ? "X" : "O") switch
-            {
-                "X" => msgTokenX,
-                "O" => msgTokenO,
-                _ => "Ugyldig brik"
-            }
-        );
+  /// <summary>
+  /// Reads key presses for selecting menu items
+  /// </summary>
+  /// <returns> New index for selector or -1 for enter </returns>
+  static int MenuSelect(string[] menuTitles, int currentIndex)
+  {
+    return Console.ReadKey().Key switch
+    {
+      ConsoleKey.UpArrow => Math.Max(0, currentIndex - 1),
+      ConsoleKey.DownArrow => Math.Min(menuTitles.Length - 1, currentIndex + 1),
+      ConsoleKey.Enter => -1,
+      _ => currentIndex,
+    };
+  }
 
-        //Renderer et tomt startbræt
-        Console.ReadKey();
-        gameHeader();
-        updateBoard();
+  static int PlayAgain()
+  {
+    Console.Clear();
+    Console.Write("Play Again? (Y/N): ");
+    string input;
+    while (true)
+    {
+      input = Console.ReadLine() ?? "";
+      if (input == "Y" || input == "N") break;
+    }
+    return input switch
+    {
+      "Y" => 1,
+      "N" => 0,
+      _ => -1,
+    };
+  }
 
-        while (userInput != "q")
+// ==================================================
+// Kryds & Bolle
+// Af: Matias
+// ==================================================
+public static void XO()
+{ 
+    string playerToken; //Gemmer menneskespillerens type af spilbrik.
+    string userInput = "";
+    string[,] gameBoard = {{ " ", " ", " " },{ " ", " ", " " },{ " ", " ", " " }}; //Opretter spilbrættet som en matrix.
+    string tokenX = "X";
+    string tokenO = "O";
+    string msgWelcome = "Din modstander {randomBotName} har udfordret dig. Tryk ENTER for at få dine brikker...\n";
+    string msgTokenX = "Du har fået kryds (X) derfor begynder du. Tryk ENTER for at begynde spillet...";
+    string msgTokenO = "Du har fået bolle (O) derfor begynder {randomBotName}. Tryk ENTER for at begynde spillet...";
+    int x;
+    int y;
+
+    // Velkomstbesked
+    gameHeader();
+    Console.WriteLine(msgWelcome);
+
+    // Tildeling af spilbrik 
+    Console.ReadKey();
+    gameHeader();
+    Console.WriteLine(
+        (playerToken = rnd.Next(0, 2) == 0 ? "X" : "O") switch
         {
-            userInput = Console.ReadLine();
-
-            if (userInput == "q")
-            {
-                break;
-            }
-            else
-            {
-                x = userInput[0] - 'a';
-                y = int.Parse(userInput[1].ToString()) - 1;
-                gameBoard[x, y] = playerToken;
-                updateBoard();
-            }
+            "X" => msgTokenX,
+            "O" => msgTokenO,
+            _ => "Ugyldig brik"
         }
+    );
 
-        void updateBoard() // Renderer spilbrættets data i en indrammet spilbræt.
+    //Renderer et tomt startbræt
+    Console.ReadKey();
+    gameHeader();
+    updateBoard();
+
+    while (userInput != "q")
+    {
+        userInput = Console.ReadLine();
+
+        if (userInput == "q")
+        {
+            break;
+        }
+        else
+        {
+            x = userInput[0] - 'a';
+            y = int.Parse(userInput[1].ToString()) - 1;
+            gameBoard[x, y] = playerToken;
+            updateBoard();
+        }
+    }
+
+        void updateBoard() // Renderer spilbrættets data i et indrammet spilbræt.
         {
             gameHeader();
             
@@ -146,10 +230,19 @@ internal class Program
 
   static void PlayNumberGame()
   {
-    // TODO add ascii art
     // TODO alternate who starts each turn
     // TODO powerups? critical hits? damage multipliers?
-    PrintIntroScreen();
+    NumberGameIntro();
+    while (true)
+    {
+      NumberGame();
+      if (PlayAgain() == 0) break; // user selected N
+    }
+    ShowMainMenu();
+  }
+
+  static void NumberGame()
+  {
     Console.Clear();
 
     int numPlayers = GetNumPlayers();
@@ -170,6 +263,11 @@ internal class Program
       ApplyDamage(playerNames, guesses, ref healthPlayerOne, ref healthPlayerTwo);
       Console.ReadKey(); // wait for user input to start next round
     }
+    PrintWinner(playerNames, healthPlayerOne, healthPlayerTwo);
+  }
+
+  static void PrintWinner(string[] playerNames, int healthPlayerOne, int healthPlayerTwo)
+  {
     Console.Clear();
     if (healthPlayerOne > healthPlayerTwo)
     {
@@ -179,8 +277,7 @@ internal class Program
     {
       Console.WriteLine($"{playerNames[1]} won!");
     }
-    // TODO Add play again
-    // PlayAgain();
+    Console.ReadKey();
   }
 
   /// <summary>
@@ -247,66 +344,6 @@ internal class Program
   }
 
   /// <summary>
-  /// Outputs welcome graphics to console
-  /// Ascii art generated using https://patorjk.com/software/taag/
-  /// </summary>
-  static void PrintWelcomeScreen()
-  {
-    Console.Clear();
-    Console.WriteLine(@"====================================================================================================");
-    Console.WriteLine(@" /$$      /$$ /$$   /$$        /$$$$$$   /$$$$$$  /$$   /$$  /$$$$$$   /$$$$$$  /$$       /$$$$$$$$");
-    Console.WriteLine(@"| $$$    /$$$| $$$ | $$       /$$__  $$ /$$__  $$| $$$ | $$ /$$__  $$ /$$__  $$| $$      | $$_____/");
-    Console.WriteLine(@"| $$$$  /$$$$| $$$$| $$      | $$  \__/| $$  \ $$| $$$$| $$| $$  \__/| $$  \ $$| $$      | $$      ");
-    Console.WriteLine(@"| $$ $$/$$ $$| $$ $$ $$      | $$      | $$  | $$| $$ $$ $$|  $$$$$$ | $$  | $$| $$      | $$$$$   ");
-    Console.WriteLine(@"| $$  $$$| $$| $$  $$$$      | $$      | $$  | $$| $$  $$$$ \____  $$| $$  | $$| $$      | $$__/   ");
-    Console.WriteLine(@"| $$\  $ | $$| $$\  $$$      | $$    $$| $$  | $$| $$\  $$$ /$$  \ $$| $$  | $$| $$      | $$      ");
-    Console.WriteLine(@"| $$ \/  | $$| $$ \  $$      |  $$$$$$/|  $$$$$$/| $$ \  $$|  $$$$$$/|  $$$$$$/| $$$$$$$$| $$$$$$$$");
-    Console.WriteLine(@"|__/     |__/|__/  \__/       \______/  \______/ |__/  \__/ \______/  \______/ |________/|________/");
-    Console.WriteLine(@"====================================================================================================");
-    Console.WriteLine();
-    Console.WriteLine(@"                                  Welcome to the MNConsole v1.0!");
-    Console.WriteLine(@"====================================================================================================");
-    Console.WriteLine("                                      Press any key to start...");
-    Console.ReadKey();
-  }
-
-  /// <summary>
-  /// Loops through menu titles and prints to console
-  /// Adds arrow to item currently selected from menu
-  /// </summary>
-  static void PrintMenu(string[] menuTitles, int currentIndex)
-  {
-    Console.Clear();
-    for (int i = 0; i < menuTitles.Length; i++)
-    {
-      if (i == currentIndex)
-      {
-        Console.WriteLine($"> {menuTitles[i]}");
-      }
-      else
-      {
-        Console.WriteLine(menuTitles[i]);
-      }
-    }
-    Console.WriteLine("\nUse ↑/↓ arrows to navigate, Enter to select");
-  }
-
-  /// <summary>
-  /// Reads key presses for selecting menu items
-  /// </summary>
-  /// <returns> New index for selector or -1 for enter </returns>
-  static int MenuSelect(string[] menuTitles, int currentIndex)
-  {
-    return Console.ReadKey().Key switch
-    {
-      ConsoleKey.UpArrow => Math.Max(0, currentIndex - 1),
-      ConsoleKey.DownArrow => Math.Min(menuTitles.Length - 1, currentIndex + 1),
-      ConsoleKey.Enter => -1,
-      _ => currentIndex,
-    };
-  }
-
-  /// <summary>
   /// Prints the game graphics to console
   /// </summary>
   static void PrintGame(string[] playerNames, int healthPlayerOne, int healthPlayerTwo)
@@ -315,7 +352,7 @@ internal class Program
     // robot ascii art from https://www.asciiart.eu/electronics/robots
     // alien ascii art from https://www.asciiart.eu/space/aliens
     // combined using claude.ai
-    string[] robotVsAlien = {
+    string[] robotVsAlien = [
 "                                                    o   o    ",
             "                                                     )-(     ",
             "                                                    (O O)    ",
@@ -328,12 +365,12 @@ internal class Program
             "|/  (--/\\--)    \\__/                               || ||   ",
             "/   _)(  )(_                                      __|| ||__ ",
             "   `---''---`                                    `---\" \"---'"
-        };
+        ];
     foreach (string line in robotVsAlien)
     {
       Console.WriteLine(line);
     }
-    Console.WriteLine($"     HP [{new string('#', (int)healthPlayerOne / 10).PadRight(10)}]                            HP [{new string('#', (int)healthPlayerTwo / 10).PadRight(10)}]");
+    Console.WriteLine($"     HP [{new string('#', healthPlayerOne / 10),-10}]                            HP [{new string('#', healthPlayerTwo / 10),-10}]");
     Console.WriteLine($"             {playerNames[0]}                                   {playerNames[1]}");
     Console.WriteLine();
   }
@@ -367,7 +404,7 @@ internal class Program
     }
   }
 
-  static void PrintIntroScreen()
+  static void NumberGameIntro()
   {
     Console.Clear();
     Console.WriteLine("╔════════════════════════════════╗");
@@ -380,9 +417,151 @@ internal class Program
     Console.WriteLine("Press any key to continue...");
     Console.ReadKey();
   }
-  // static void PlayAgain()
-  // {
-  //
-  // }
-  //
+
+  // ==================================================
+  // Conway's Game of Life
+  // Af: Nicolaj
+  // ==================================================
+
+  static void PlayGameOfLife()
+  {
+    GameOfLifeIntro();
+    while (true)
+    {
+      GameOfLife();
+      if (PlayAgain() == 0) break; // user selected N
+    }
+    ShowMainMenu();
+  }
+
+  static void GameOfLife()
+  {
+    Console.Clear();
+    Console.CursorVisible = false;
+    int arrayHeight = 20;
+    int arrayWidth = 40;
+    string[,] cellArray = InitializeArray(arrayHeight, arrayWidth);
+
+    // toad pattern
+    // cellArray[9, 19] = "██";
+    // cellArray[9, 20] = "██";
+    // cellArray[9, 21] = "██";
+    // cellArray[10, 18] = "██";
+    // cellArray[10, 19] = "██";
+    // cellArray[10, 20] = "██";
+
+    // glider pattern
+    cellArray[2, 4] = "██";
+    cellArray[3, 5] = "██";
+    cellArray[4, 3] = "██";
+    cellArray[4, 4] = "██";
+    cellArray[4, 5] = "██";
+
+
+    while (!Console.KeyAvailable)
+    {
+      PrintCellArray(cellArray);
+      string[,] newArray = InitializeArray(arrayHeight, arrayWidth);
+      for (int i = 0; i < cellArray.GetLength(0); i++)
+      {
+        for (int j = 0; j < cellArray.GetLength(1); j++)
+        {
+          int neighbors = CountNeightbors(i, j, cellArray);
+          if (cellArray[i, j] == "  " && neighbors == 3)
+          {
+            newArray[i, j] = "██";
+          }
+          else if (cellArray[i, j] == "██")
+          {
+            newArray[i, j] = neighbors switch
+            {
+              < 2 => "  ",
+              > 3 => "  ",
+              _ => "██",
+            };
+          }
+        }
+      }
+      cellArray = newArray;
+      Console.WriteLine("\nPress any key to stop");
+      Thread.Sleep(250);
+    }
+    if (Console.KeyAvailable)
+    {
+      Console.ReadKey(true);
+      Console.CursorVisible = true;
+    }
+  }
+
+  static void GameOfLifeIntro()
+  {
+    Console.Clear();
+    Console.WriteLine("╔════════════════════════════════╗");
+    Console.WriteLine("║          GAME OF LIFE!         ║");
+    Console.WriteLine("║                                ║");
+    Console.WriteLine("║ Zero-player evolutionary game! ║");
+    Console.WriteLine("║ Watch cells live, die, and     ║");
+    Console.WriteLine("║ evolve across generations.     ║");
+    Console.WriteLine("╚════════════════════════════════╝");
+    Console.WriteLine();
+    Console.WriteLine("Press any key to continue...");
+    Console.ReadKey();
+  }
+
+  /// <summary>
+  /// Prints the cell array to console
+  /// </summary>
+  static void PrintCellArray(string[,] cellArray)
+  {
+    Console.SetCursorPosition(0, 0);
+    for (int i = 0; i < cellArray.GetLength(0); i++)
+    {
+      for (int j = 0; j < cellArray.GetLength(1); j++)
+      {
+        Console.Write(cellArray[i, j]);
+      }
+      Console.WriteLine();
+    }
+  }
+
+  /// <summary>
+  /// Counts number of live neighbors for cell[row, col]
+  /// </summary>
+  static int CountNeightbors(int row, int col, string[,] cellArray)
+  {
+    int liveNeighbors = 0;
+    for (int i = -1; i <= 1; i++)
+    {
+      for (int j = -1; j <= 1; j++)
+      {
+        if (i == 0 && j == 0) continue;
+        int newRow = row + i;
+        int newCol = col + j;
+        if (newRow < 0 || newRow >= cellArray.GetLength(0) ||
+            newCol < 0 || newCol >= cellArray.GetLength(1)) continue;
+        if (cellArray[newRow, newCol] == "██")
+        {
+          liveNeighbors++;
+        }
+      }
+    }
+    return liveNeighbors;
+  }
+
+  /// <summary>
+  /// Creates array of size arrayHeight, arrayWidth and fills with "x"
+  /// </summary>
+  /// <returns> returns array[arrayHeight, arrayWidth] </returns>
+  static string[,] InitializeArray(int arrayHeight, int arrayWidth)
+  {
+    string[,] cellArray = new string[arrayHeight, arrayWidth];
+    for (int i = 0; i < arrayHeight; i++)
+    {
+      for (int j = 0; j < arrayWidth; j++)
+      {
+        cellArray[i, j] = "  ";
+      }
+    }
+    return cellArray;
+  }
 }
