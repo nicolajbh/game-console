@@ -24,6 +24,7 @@ internal class Program
     int selectedIndex = 0;
     while (true)
     {
+      Console.Clear();
       PrintMenu(menuTitles, selectedIndex);
       int result = MenuSelect(menuTitles, selectedIndex);
       if (result == -1) break; // user made selection, exit menu loop
@@ -71,7 +72,6 @@ internal class Program
   /// </summary>
   static void PrintMenu(string[] menuTitles, int currentIndex)
   {
-    Console.Clear();
     for (int i = 0; i < menuTitles.Length; i++)
     {
       if (i == currentIndex)
@@ -80,7 +80,7 @@ internal class Program
       }
       else
       {
-        Console.WriteLine(menuTitles[i]);
+        Console.WriteLine($"{menuTitles[i]}  "); // spaces to write over previously selected items
       }
     }
     Console.WriteLine("\nUse ^/v arrows to navigate, Enter to select");
@@ -442,9 +442,8 @@ internal class Program
     Console.CursorVisible = false;
     int arrayHeight = 20;
     int arrayWidth = 40;
-    string[,] cellArray = InitializeArray(arrayHeight, arrayWidth);
 
-    cellArray = SelectPattern(cellArray);
+    string[,] cellArray = SelectPattern(arrayHeight, arrayWidth);
     while (!Console.KeyAvailable)
     {
       PrintCellArray(cellArray);
@@ -552,60 +551,62 @@ internal class Program
     return cellArray;
   }
 
-  static string[,] SelectPattern(string[,] cellArray)
+  static string[,] SelectPattern(int arrayHeight, int arrayWidth)
   {
-
+    string[,] cellArray = InitializeArray(arrayHeight, arrayWidth);
     string[] patterns = ["Toad", "Glider", "Die Hard", "Lightweight Spaceship"];
     int currentIndex = 0;
     while (true)
     {
+      switch (currentIndex)
+      {
+        case 0: // toad pattern
+          cellArray[9, 19] = "██";
+          cellArray[9, 20] = "██";
+          cellArray[9, 21] = "██";
+          cellArray[10, 18] = "██";
+          cellArray[10, 19] = "██";
+          cellArray[10, 20] = "██";
+          break;
+        case 1: // glider pattern
+          cellArray[2, 4] = "██";
+          cellArray[3, 5] = "██";
+          cellArray[4, 3] = "██";
+          cellArray[4, 4] = "██";
+          cellArray[4, 5] = "██";
+          break;
+        case 2: // Die hard pattern
+          cellArray[10, 21] = "██";
+          cellArray[11, 15] = "██";
+          cellArray[11, 16] = "██";
+          cellArray[12, 16] = "██";
+          cellArray[12, 20] = "██";
+          cellArray[12, 21] = "██";
+          cellArray[12, 21] = "██";
+          cellArray[12, 22] = "██";
+          break;
+        case 3: // Lightweight Spaceship pattern
+          cellArray[8, 11] = "██";
+          cellArray[8, 12] = "██";
+          cellArray[8, 13] = "██";
+          cellArray[8, 14] = "██";
+          cellArray[9, 10] = "██";
+          cellArray[9, 14] = "██";
+          cellArray[10, 14] = "██";
+          cellArray[11, 10] = "██";
+          cellArray[11, 13] = "██";
+          break;
+        default:
+          break;
+      }
+      PrintCellArray(cellArray);
       PrintMenu(patterns, currentIndex);
       int result = MenuSelect(patterns, currentIndex);
       if (result == -1) break; // user made selection, exit menu loop
       currentIndex = result;
+      cellArray = InitializeArray(arrayHeight, arrayWidth);
     }
-
-    switch (currentIndex)
-    {
-      case 0: // toad pattern
-        cellArray[9, 19] = "██";
-        cellArray[9, 20] = "██";
-        cellArray[9, 21] = "██";
-        cellArray[10, 18] = "██";
-        cellArray[10, 19] = "██";
-        cellArray[10, 20] = "██";
-        break;
-      case 1: // glider pattern
-        cellArray[2, 4] = "██";
-        cellArray[3, 5] = "██";
-        cellArray[4, 3] = "██";
-        cellArray[4, 4] = "██";
-        cellArray[4, 5] = "██";
-        break;
-      case 2: // Die hard pattern
-        cellArray[10, 17] = "██";
-        cellArray[11, 15] = "██";
-        cellArray[11, 16] = "██";
-        cellArray[12, 16] = "██";
-        cellArray[12, 20] = "██";
-        cellArray[12, 21] = "██";
-        cellArray[12, 21] = "██";
-        cellArray[12, 22] = "██";
-        break;
-      case 3: // Lightweight Spaceship pattern
-        cellArray[8, 11] = "██";
-        cellArray[8, 12] = "██";
-        cellArray[8, 13] = "██";
-        cellArray[8, 14] = "██";
-        cellArray[9, 10] = "██";
-        cellArray[9, 14] = "██";
-        cellArray[10, 14] = "██";
-        cellArray[11, 10] = "██";
-        cellArray[11, 13] = "██";
-        break;
-      default:
-        break;
-    }
+    Console.Clear();
     return cellArray;
   }
 }
