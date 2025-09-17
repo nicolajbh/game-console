@@ -555,7 +555,7 @@ internal class Program
   static string[,] SelectPattern(string[,] cellArray)
   {
 
-    string[] patterns = ["Toad", "Glider"];
+    string[] patterns = ["Toad", "Glider", "Die Hard", "Lightweight Spaceship"];
     int currentIndex = 0;
     while (true)
     {
@@ -581,6 +581,27 @@ internal class Program
         cellArray[4, 3] = "██";
         cellArray[4, 4] = "██";
         cellArray[4, 5] = "██";
+        break;
+      case 2: // Die hard pattern
+        cellArray[10, 17] = "██";
+        cellArray[11, 15] = "██";
+        cellArray[11, 16] = "██";
+        cellArray[12, 16] = "██";
+        cellArray[12, 20] = "██";
+        cellArray[12, 21] = "██";
+        cellArray[12, 21] = "██";
+        cellArray[12, 22] = "██";
+        break;
+      case 3: // Lightweight Spaceship pattern
+        cellArray[8, 11] = "██";
+        cellArray[8, 12] = "██";
+        cellArray[8, 13] = "██";
+        cellArray[8, 14] = "██";
+        cellArray[9, 10] = "██";
+        cellArray[9, 14] = "██";
+        cellArray[10, 14] = "██";
+        cellArray[11, 10] = "██";
+        cellArray[11, 13] = "██";
         break;
       default:
         break;
