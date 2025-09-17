@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata.Ecma335;
-
-internal class Program
+﻿internal class Program
 {
   static Random rnd = new();
 
@@ -16,6 +14,7 @@ internal class Program
     {
       { "Number Battle", PlayNumberGame},
       { "Kryds & Bolle", XO },
+      { "Game of Life", PlayGameOfLife},
       { "Exit", () => Environment.Exit(0) }
     };
     var menuTitles = gameMenu.Keys.ToArray();
@@ -37,6 +36,84 @@ internal class Program
 
     Thread.Sleep(2000); // simulate game loading
     gameMenu[selectedGame]();
+  }
+
+  /// <summary>
+  /// Outputs welcome graphics to console
+  /// Ascii art generated using https://patorjk.com/software/taag/
+  /// </summary>
+  static void PrintWelcomeScreen()
+  {
+    Console.Clear();
+    Console.WriteLine(@"====================================================================================================");
+    Console.WriteLine(@" /$$      /$$ /$$   /$$        /$$$$$$   /$$$$$$  /$$   /$$  /$$$$$$   /$$$$$$  /$$       /$$$$$$$$");
+    Console.WriteLine(@"| $$$    /$$$| $$$ | $$       /$$__  $$ /$$__  $$| $$$ | $$ /$$__  $$ /$$__  $$| $$      | $$_____/");
+    Console.WriteLine(@"| $$$$  /$$$$| $$$$| $$      | $$  \__/| $$  \ $$| $$$$| $$| $$  \__/| $$  \ $$| $$      | $$      ");
+    Console.WriteLine(@"| $$ $$/$$ $$| $$ $$ $$      | $$      | $$  | $$| $$ $$ $$|  $$$$$$ | $$  | $$| $$      | $$$$$   ");
+    Console.WriteLine(@"| $$  $$$| $$| $$  $$$$      | $$      | $$  | $$| $$  $$$$ \____  $$| $$  | $$| $$      | $$__/   ");
+    Console.WriteLine(@"| $$\  $ | $$| $$\  $$$      | $$    $$| $$  | $$| $$\  $$$ /$$  \ $$| $$  | $$| $$      | $$      ");
+    Console.WriteLine(@"| $$ \/  | $$| $$ \  $$      |  $$$$$$/|  $$$$$$/| $$ \  $$|  $$$$$$/|  $$$$$$/| $$$$$$$$| $$$$$$$$");
+    Console.WriteLine(@"|__/     |__/|__/  \__/       \______/  \______/ |__/  \__/ \______/  \______/ |________/|________/");
+    Console.WriteLine(@"====================================================================================================");
+    Console.WriteLine();
+    Console.WriteLine(@"                                  Welcome to the MNConsole v1.0!");
+    Console.WriteLine(@"====================================================================================================");
+    Console.WriteLine("                                      Press any key to start...");
+    Console.ReadKey();
+  }
+
+  /// <summary>
+  /// Loops through menu titles and prints to console
+  /// Adds arrow to item currently selected from menu
+  /// </summary>
+  static void PrintMenu(string[] menuTitles, int currentIndex)
+  {
+    Console.Clear();
+    for (int i = 0; i < menuTitles.Length; i++)
+    {
+      if (i == currentIndex)
+      {
+        Console.WriteLine($"> {menuTitles[i]}");
+      }
+      else
+      {
+        Console.WriteLine(menuTitles[i]);
+      }
+    }
+    Console.WriteLine("\nUse ↑/↓ arrows to navigate, Enter to select");
+  }
+
+  /// <summary>
+  /// Reads key presses for selecting menu items
+  /// </summary>
+  /// <returns> New index for selector or -1 for enter </returns>
+  static int MenuSelect(string[] menuTitles, int currentIndex)
+  {
+    return Console.ReadKey().Key switch
+    {
+      ConsoleKey.UpArrow => Math.Max(0, currentIndex - 1),
+      ConsoleKey.DownArrow => Math.Min(menuTitles.Length - 1, currentIndex + 1),
+      ConsoleKey.Enter => -1,
+      _ => currentIndex,
+    };
+  }
+
+  static int PlayAgain()
+  {
+    Console.Clear();
+    Console.Write("Play Again? (Y/N): ");
+    string input;
+    while (true)
+    {
+      input = Console.ReadLine() ?? "";
+      if (input == "Y" || input == "N") break;
+    }
+    return input switch
+    {
+      "Y" => 1,
+      "N" => 0,
+      _ => -1,
+    };
   }
 
   // ==================================================
@@ -131,10 +208,9 @@ internal class Program
 
   static void PlayNumberGame()
   {
-    // TODO add ascii art
     // TODO alternate who starts each turn
     // TODO powerups? critical hits? damage multipliers?
-    PrintIntroScreen();
+    NumberGameIntro();
     while (true)
     {
       NumberGame();
@@ -246,66 +322,6 @@ internal class Program
   }
 
   /// <summary>
-  /// Outputs welcome graphics to console
-  /// Ascii art generated using https://patorjk.com/software/taag/
-  /// </summary>
-  static void PrintWelcomeScreen()
-  {
-    Console.Clear();
-    Console.WriteLine(@"====================================================================================================");
-    Console.WriteLine(@" /$$      /$$ /$$   /$$        /$$$$$$   /$$$$$$  /$$   /$$  /$$$$$$   /$$$$$$  /$$       /$$$$$$$$");
-    Console.WriteLine(@"| $$$    /$$$| $$$ | $$       /$$__  $$ /$$__  $$| $$$ | $$ /$$__  $$ /$$__  $$| $$      | $$_____/");
-    Console.WriteLine(@"| $$$$  /$$$$| $$$$| $$      | $$  \__/| $$  \ $$| $$$$| $$| $$  \__/| $$  \ $$| $$      | $$      ");
-    Console.WriteLine(@"| $$ $$/$$ $$| $$ $$ $$      | $$      | $$  | $$| $$ $$ $$|  $$$$$$ | $$  | $$| $$      | $$$$$   ");
-    Console.WriteLine(@"| $$  $$$| $$| $$  $$$$      | $$      | $$  | $$| $$  $$$$ \____  $$| $$  | $$| $$      | $$__/   ");
-    Console.WriteLine(@"| $$\  $ | $$| $$\  $$$      | $$    $$| $$  | $$| $$\  $$$ /$$  \ $$| $$  | $$| $$      | $$      ");
-    Console.WriteLine(@"| $$ \/  | $$| $$ \  $$      |  $$$$$$/|  $$$$$$/| $$ \  $$|  $$$$$$/|  $$$$$$/| $$$$$$$$| $$$$$$$$");
-    Console.WriteLine(@"|__/     |__/|__/  \__/       \______/  \______/ |__/  \__/ \______/  \______/ |________/|________/");
-    Console.WriteLine(@"====================================================================================================");
-    Console.WriteLine();
-    Console.WriteLine(@"                                  Welcome to the MNConsole v1.0!");
-    Console.WriteLine(@"====================================================================================================");
-    Console.WriteLine("                                      Press any key to start...");
-    Console.ReadKey();
-  }
-
-  /// <summary>
-  /// Loops through menu titles and prints to console
-  /// Adds arrow to item currently selected from menu
-  /// </summary>
-  static void PrintMenu(string[] menuTitles, int currentIndex)
-  {
-    Console.Clear();
-    for (int i = 0; i < menuTitles.Length; i++)
-    {
-      if (i == currentIndex)
-      {
-        Console.WriteLine($"> {menuTitles[i]}");
-      }
-      else
-      {
-        Console.WriteLine(menuTitles[i]);
-      }
-    }
-    Console.WriteLine("\nUse ↑/↓ arrows to navigate, Enter to select");
-  }
-
-  /// <summary>
-  /// Reads key presses for selecting menu items
-  /// </summary>
-  /// <returns> New index for selector or -1 for enter </returns>
-  static int MenuSelect(string[] menuTitles, int currentIndex)
-  {
-    return Console.ReadKey().Key switch
-    {
-      ConsoleKey.UpArrow => Math.Max(0, currentIndex - 1),
-      ConsoleKey.DownArrow => Math.Min(menuTitles.Length - 1, currentIndex + 1),
-      ConsoleKey.Enter => -1,
-      _ => currentIndex,
-    };
-  }
-
-  /// <summary>
   /// Prints the game graphics to console
   /// </summary>
   static void PrintGame(string[] playerNames, int healthPlayerOne, int healthPlayerTwo)
@@ -314,7 +330,7 @@ internal class Program
     // robot ascii art from https://www.asciiart.eu/electronics/robots
     // alien ascii art from https://www.asciiart.eu/space/aliens
     // combined using claude.ai
-    string[] robotVsAlien = {
+    string[] robotVsAlien = [
 "                                                    o   o    ",
             "                                                     )-(     ",
             "                                                    (O O)    ",
@@ -327,12 +343,12 @@ internal class Program
             "|/  (--/\\--)    \\__/                               || ||   ",
             "/   _)(  )(_                                      __|| ||__ ",
             "   `---''---`                                    `---\" \"---'"
-        };
+        ];
     foreach (string line in robotVsAlien)
     {
       Console.WriteLine(line);
     }
-    Console.WriteLine($"     HP [{new string('#', (int)healthPlayerOne / 10).PadRight(10)}]                            HP [{new string('#', (int)healthPlayerTwo / 10).PadRight(10)}]");
+    Console.WriteLine($"     HP [{new string('#', healthPlayerOne / 10),-10}]                            HP [{new string('#', healthPlayerTwo / 10),-10}]");
     Console.WriteLine($"             {playerNames[0]}                                   {playerNames[1]}");
     Console.WriteLine();
   }
@@ -366,7 +382,7 @@ internal class Program
     }
   }
 
-  static void PrintIntroScreen()
+  static void NumberGameIntro()
   {
     Console.Clear();
     Console.WriteLine("╔════════════════════════════════╗");
@@ -380,27 +396,144 @@ internal class Program
     Console.ReadKey();
   }
 
-  static int PlayAgain()
+  // ==================================================
+  // Conway's Game of Life
+  // Af: Nicolaj
+  // ==================================================
+
+  static void PlayGameOfLife()
   {
-    Console.Clear();
-    Console.Write("Play Again? (Y/N): ");
-    string input;
+    GameOfLifeIntro();
     while (true)
     {
-      input = Console.ReadLine() ?? "";
-      if (input == "Y" || input == "N")
+      GameOfLife();
+      if (PlayAgain() == 0) break; // user selected N
+    }
+    ShowMainMenu();
+  }
+
+  static void GameOfLife()
+  {
+    Console.Clear();
+    Console.CursorVisible = false;
+    int arrayHeight = 20;
+    int arrayWidth = 40;
+    string[,] cellArray = InitializeArray(arrayHeight, arrayWidth);
+
+    // toad pattern
+    // cellArray[9, 19] = "██";
+    // cellArray[9, 20] = "██";
+    // cellArray[9, 21] = "██";
+    // cellArray[10, 18] = "██";
+    // cellArray[10, 19] = "██";
+    // cellArray[10, 20] = "██";
+
+    // glider pattern
+    cellArray[2, 4] = "██";
+    cellArray[3, 5] = "██";
+    cellArray[4, 3] = "██";
+    cellArray[4, 4] = "██";
+    cellArray[4, 5] = "██";
+
+
+    while (true)
+    {
+      PrintCellArray(cellArray);
+      string[,] newArray = InitializeArray(arrayHeight, arrayWidth);
+      for (int i = 0; i < cellArray.GetLength(0); i++)
       {
-        break;
+        for (int j = 0; j < cellArray.GetLength(1); j++)
+        {
+          int neighbors = CountNeightbors(i, j, cellArray);
+          if (cellArray[i, j] == "  " && neighbors == 3)
+          {
+            newArray[i, j] = "██";
+          }
+          else if (cellArray[i, j] == "██")
+          {
+            newArray[i, j] = neighbors switch
+            {
+              < 2 => "  ",
+              > 3 => "  ",
+              _ => "██",
+            };
+          }
+        }
+      }
+      cellArray = newArray;
+      Thread.Sleep(250);
+    }
+  }
+
+  static void GameOfLifeIntro()
+  {
+    Console.Clear();
+    Console.WriteLine("╔════════════════════════════════╗");
+    Console.WriteLine("║          GAME OF LIFE!         ║");
+    Console.WriteLine("║                                ║");
+    Console.WriteLine("║ Zero-player evolutionary game! ║");
+    Console.WriteLine("║ Watch cells live, die, and     ║");
+    Console.WriteLine("║ evolve across generations.     ║");
+    Console.WriteLine("╚════════════════════════════════╝");
+    Console.WriteLine();
+    Console.WriteLine("Press any key to continue...");
+    Console.ReadKey();
+  }
+
+  /// <summary>
+  /// Prints the cell array to console
+  /// </summary>
+  static void PrintCellArray(string[,] cellArray)
+  {
+    Console.SetCursorPosition(0, 0);
+    for (int i = 0; i < cellArray.GetLength(0); i++)
+    {
+      for (int j = 0; j < cellArray.GetLength(1); j++)
+      {
+        Console.Write(cellArray[i, j]);
+      }
+      Console.WriteLine();
+    }
+  }
+
+  /// <summary>
+  /// Counts number of live neighbors for cell[row, col]
+  /// </summary>
+  static int CountNeightbors(int row, int col, string[,] cellArray)
+  {
+    int liveNeighbors = 0;
+    for (int i = -1; i <= 1; i++)
+    {
+      for (int j = -1; j <= 1; j++)
+      {
+        if (i == 0 && j == 0) continue;
+        int newRow = row + i;
+        int newCol = col + j;
+        if (newRow < 0 || newRow >= cellArray.GetLength(0) ||
+            newCol < 0 || newCol >= cellArray.GetLength(1)) continue;
+        if (cellArray[newRow, newCol] == "██")
+        {
+          liveNeighbors++;
+        }
       }
     }
-    switch (input)
+    return liveNeighbors;
+  }
+
+  /// <summary>
+  /// Creates array of size arrayHeight, arrayWidth and fills with "x"
+  /// </summary>
+  /// <returns> returns array[arrayHeight, arrayWidth] </returns>
+  static string[,] InitializeArray(int arrayHeight, int arrayWidth)
+  {
+    string[,] cellArray = new string[arrayHeight, arrayWidth];
+    for (int i = 0; i < arrayHeight; i++)
     {
-      case "Y":
-        return 1;
-      case "N":
-        return 0;
-      default:
-        return -1;
+      for (int j = 0; j < arrayWidth; j++)
+      {
+        cellArray[i, j] = "  ";
+      }
     }
+    return cellArray;
   }
 }
