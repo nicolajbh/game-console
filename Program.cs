@@ -80,7 +80,7 @@
         Console.WriteLine(menuTitles[i]);
       }
     }
-    Console.WriteLine("\nUse ↑/↓ arrows to navigate, Enter to select");
+    Console.WriteLine("\nUse ^/v arrows to navigate, Enter to select");
   }
 
   /// <summary>
