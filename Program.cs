@@ -167,19 +167,32 @@ internal class Program
     gameHeader();
     updateBoard();
 
-    //Tur tagning
-    while (!winCondition)
+    RunXO();
+
+    while (true)
     {
-      if (playerToken == "X")
-      {
-        playerTurn();
-        if (!winCondition) { botTurn(); }
-      }
-      else
-      {
-        botTurn();
-        if (!winCondition) { playerTurn(); }
-      }
+        if (PlayAgain() == 0) break; // user selected N
+        else { XO(); }
+    }
+    ShowMainMenu();
+
+    void RunXO()
+    {
+        while (!winCondition)
+        {
+            if (playerToken == "X")
+            {
+                playerTurn();
+                if (!winCondition) { botTurn(); }
+            }
+            else
+            {
+                botTurn();
+                if (!winCondition) { playerTurn(); }
+            }
+        }
+
+        Console.ReadKey();
     }
 
     void botTurn()
