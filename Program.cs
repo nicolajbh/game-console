@@ -124,6 +124,10 @@ internal class Program
   // Af: Matias
   // ==================================================
   public static void XO()
+///<summary>
+///Programmet antager at spilleren laver legale træk og giver korrekt formaterede inputs.
+///For at placerer en spil brik indtaster spilleren et koordinate i formattet 'a1' (uden citering).
+///</summary>
   {
     string playerToken = rnd.Next(0, 2) == 0 ? "X" : "O"; // Gemmer spillerens type af spilbrik.
     string botToken = playerToken == "X" ? "O" : "X"; // Tildeler den anden brik til bot'en.
@@ -135,15 +139,15 @@ internal class Program
     int botTokenCount = 0;
     int playerTokenCount = 0;
     bool winCondition = false;
-    (int x, int y) removedToken = (-1, -1); // Bruger Tuple frem for Array da det gør min boolean condition i botPlaceToken() mere læsbar.
+    (int x, int y) removedToken = (-1, -1); // Bruger Tuple frem for Array da det gør min boolean condition i BotPlaceToken() mere læsbar.
 
     // Velkomstbesked
-    gameHeader();
+    GameHeader();
     Console.WriteLine(msgWelcome);
 
     // Tildeling af spilbrik 
     Console.ReadKey();
-    gameHeader();
+    GameHeader();
     Console.WriteLine(
         (playerToken) switch
         {
@@ -155,10 +159,10 @@ internal class Program
 
     //Renderer et tomt startbræt
     Console.ReadKey();
-    gameHeader();
-    updateBoard();
+    GameHeader();
+    UpdateBoard();
 
-    RunXO();
+    RunXO(); //Starter spillet
 
     while (true)
     {
@@ -173,34 +177,35 @@ internal class Program
         {
             if (playerToken == "X")
             {
-                playerTurn();
-                if (!winCondition) { botTurn(); }
+                PlayerTurn();
+                if (!winCondition) { BotTurn(); }
             }
             else
             {
-                botTurn();
-                if (!winCondition) { playerTurn(); }
+                BotTurn();
+                if (!winCondition) { PlayerTurn(); }
             }
         }
 
+        Console.WriteLine("\nSpil afsluttet. Tryk ENTER for at fortsætte...");
         Console.ReadKey();
     }
 
-    void botTurn()
+    void BotTurn()
     {
       if (botTokenCount < 3)
       {
-        botPlaceToken();
+        BotPlaceToken();
       }
       else
       {
-        botRemoveToken();
-        botPlaceToken();
+        BotRemoveToken();
+        BotPlaceToken();
       }
 
     }
 
-    void botRemoveToken()
+    void BotRemoveToken()
     {
       int x = rnd.Next(0, 3);
       int y = rnd.Next(0, 3);
@@ -213,11 +218,11 @@ internal class Program
       }
       else
       {
-        botRemoveToken();
+        BotRemoveToken();
       }
     }
 
-    void botPlaceToken()
+    void BotPlaceToken()
     {
       int x = rnd.Next(0, 3);
       int y = rnd.Next(0, 3);
@@ -229,29 +234,29 @@ internal class Program
         {
             gameBoard[x, y] = botToken;
             botTokenCount++;
-            updateBoard();
-            endGame();
+            UpdateBoard();
+            EndGame();
         }
         else
         {
-            botPlaceToken();
+            BotPlaceToken();
         }
     }
 
-    void playerTurn()
+    void PlayerTurn()
     {
       if (playerTokenCount < 3)
       {
-        playerPlaceToken();
+        PlayerPlaceToken();
       }
       else
       {
-        playerRemoveToken();
-        playerPlaceToken();
+        PlayerRemoveToken();
+        PlayerPlaceToken();
       }
     }
 
-    void playerRemoveToken()
+    void PlayerRemoveToken()
     {
       userInput = Console.ReadLine();
       int x = userInput[0] - 'a';
@@ -269,11 +274,11 @@ internal class Program
       }
       else
       {
-        botRemoveToken();
+        BotRemoveToken();
       }
     }
 
-    void playerPlaceToken()
+    void PlayerPlaceToken()
     {
       userInput = Console.ReadLine();
       int x = userInput[0] - 'a';
@@ -287,14 +292,14 @@ internal class Program
         {
             gameBoard[x, y] = playerToken;
             playerTokenCount++;
-            updateBoard();
-            endGame();
+            UpdateBoard();
+            EndGame();
         }
     }
 
-    void updateBoard() // Renderer spilbrættets data i et indrammet spilbræt.
+    void UpdateBoard() // Renderer spilbrættets data i et indrammet spilbræt.
     {
-      gameHeader();
+      GameHeader();
 
       //Symboler brugt til at bygge spilbrætrammen.
       string borderPipe = "| ";
@@ -327,7 +332,7 @@ internal class Program
       ;
     }
 
-    void gameHeader() //Renderer spiltitlen
+    void GameHeader() //Renderer spiltitlen
     {
       Console.Clear();
       Console.WriteLine("""
@@ -341,7 +346,7 @@ internal class Program
     }
     ;
 
-    void endGame()
+    void EndGame()
         {
             string a1 = gameBoard[0, 0], a2 = gameBoard[0, 1], a3 = gameBoard[0, 2], b1 = gameBoard[1, 0], b2 = gameBoard[1, 1], b3 = gameBoard[1, 2], c1 = gameBoard[2, 0], c2 = gameBoard[2, 1], c3 = gameBoard[2, 2];
             var lines = new Dictionary<string, string[]>
