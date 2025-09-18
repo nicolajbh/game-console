@@ -24,6 +24,7 @@ internal class Program
     int selectedIndex = 0;
     while (true)
     {
+      Console.Clear();
       PrintMenu(menuTitles, selectedIndex);
       int result = MenuSelect(menuTitles, selectedIndex);
       if (result == -1) break; // user made selection, exit menu loop
@@ -71,7 +72,6 @@ internal class Program
   /// </summary>
   static void PrintMenu(string[] menuTitles, int currentIndex)
   {
-    Console.Clear();
     for (int i = 0; i < menuTitles.Length; i++)
     {
       if (i == currentIndex)
@@ -80,7 +80,7 @@ internal class Program
       }
       else
       {
-        Console.WriteLine(menuTitles[i]);
+        Console.WriteLine($"{menuTitles[i]}  "); // spaces to write over previously selected items
       }
     }
     Console.WriteLine("\nUse ^/v arrows to navigate, Enter to select");
@@ -108,7 +108,7 @@ internal class Program
     string input;
     while (true)
     {
-      input = Console.ReadLine() ?? "";
+      input = (Console.ReadLine() ?? "").ToUpper();
       if (input == "Y" || input == "N") break;
     }
     return input switch
@@ -147,9 +147,9 @@ public static void XO()
     Console.WriteLine(
         (playerToken) switch
         {
-            "X" => msgTokenX,
-            "O" => msgTokenO,
-            _ => "Ugyldig brik"
+          "X" => msgTokenX,
+          "O" => msgTokenO,
+          _ => "Ugyldig brik"
         }
     );
 
@@ -299,23 +299,23 @@ public static void XO()
                 { borderSpace, borderSpace, borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderSpace }
             };
 
-            //Printer spilbræt og ramme ud til konsollen.
-            for (int i = 0; i < gameBorders.GetLength(0); i++)
-            {
-                for (int j = 0; j < gameBorders.GetLength(1); j++)
-                {
-                    Console.Write(gameBorders[i, j]);
-                }
-                ;
-                Console.WriteLine();
-            }
-            ;
-        }
-
-        void gameHeader() //Renderer spiltitlen
+      //Printer spilbræt og ramme ud til konsollen.
+      for (int i = 0; i < gameBorders.GetLength(0); i++)
+      {
+        for (int j = 0; j < gameBorders.GetLength(1); j++)
         {
-            Console.Clear();
-            Console.WriteLine("""
+          Console.Write(gameBorders[i, j]);
+        }
+          ;
+        Console.WriteLine();
+      }
+      ;
+    }
+
+    void gameHeader() //Renderer spiltitlen
+    {
+      Console.Clear();
+      Console.WriteLine("""
             XOXOXOXOXOXOXOXOXOXO
 
                KRYDS & BOLLE!
@@ -323,8 +323,9 @@ public static void XO()
             XOXOXOXOXOXOXOXOXOXO
 
             """);
-        };
     }
+    ;
+  }
 
 
   // ==================================================
@@ -544,24 +545,8 @@ public static void XO()
     Console.CursorVisible = false;
     int arrayHeight = 20;
     int arrayWidth = 40;
-    string[,] cellArray = InitializeArray(arrayHeight, arrayWidth);
 
-    // toad pattern
-    // cellArray[9, 19] = "██";
-    // cellArray[9, 20] = "██";
-    // cellArray[9, 21] = "██";
-    // cellArray[10, 18] = "██";
-    // cellArray[10, 19] = "██";
-    // cellArray[10, 20] = "██";
-
-    // glider pattern
-    cellArray[2, 4] = "██";
-    cellArray[3, 5] = "██";
-    cellArray[4, 3] = "██";
-    cellArray[4, 4] = "██";
-    cellArray[4, 5] = "██";
-
-
+    string[,] cellArray = SelectPattern(arrayHeight, arrayWidth);
     while (!Console.KeyAvailable)
     {
       PrintCellArray(cellArray);
@@ -570,29 +555,17 @@ public static void XO()
       {
         for (int j = 0; j < cellArray.GetLength(1); j++)
         {
-          int neighbors = CountNeightbors(i, j, cellArray);
-          if (cellArray[i, j] == "  " && neighbors == 3)
-          {
-            newArray[i, j] = "██";
-          }
-          else if (cellArray[i, j] == "██")
-          {
-            newArray[i, j] = neighbors switch
-            {
-              < 2 => "  ",
-              > 3 => "  ",
-              _ => "██",
-            };
-          }
+          int neighbors = CountNeighbors(i, j, cellArray);
+          newArray[i, j] = ApplyGameOfLifeRules(cellArray[i, j], neighbors);
         }
       }
       cellArray = newArray;
       Console.WriteLine("\nPress any key to stop");
-      Thread.Sleep(250);
+      Thread.Sleep(200);
     }
     if (Console.KeyAvailable)
     {
-      Console.ReadKey(true);
+      Console.ReadKey(true); // consume key
       Console.CursorVisible = true;
     }
   }
@@ -613,7 +586,7 @@ public static void XO()
   }
 
   /// <summary>
-  /// Prints the cell array to console
+  /// Prints the cell array to console starting at Position 0, 0
   /// </summary>
   static void PrintCellArray(string[,] cellArray)
   {
@@ -631,7 +604,7 @@ public static void XO()
   /// <summary>
   /// Counts number of live neighbors for cell[row, col]
   /// </summary>
-  static int CountNeightbors(int row, int col, string[,] cellArray)
+  static int CountNeighbors(int row, int col, string[,] cellArray)
   {
     int liveNeighbors = 0;
     for (int i = -1; i <= 1; i++)
@@ -653,7 +626,7 @@ public static void XO()
   }
 
   /// <summary>
-  /// Creates array of size arrayHeight, arrayWidth and fills with "x"
+  /// Creates array of size arrayHeight, arrayWidth and fills with "  "
   /// </summary>
   /// <returns> returns array[arrayHeight, arrayWidth] </returns>
   static string[,] InitializeArray(int arrayHeight, int arrayWidth)
@@ -667,5 +640,81 @@ public static void XO()
       }
     }
     return cellArray;
+  }
+
+  /// <summary>
+  /// Let's user select a pattern from a predefined list of 4 common patterns
+  /// Prints the pattern to the console so user can preview it before selecting
+  /// </summary>
+  /// <returns> An array with the selected pattern </returns>
+  static string[,] SelectPattern(int arrayHeight, int arrayWidth)
+  {
+    string[,] cellArray = InitializeArray(arrayHeight, arrayWidth);
+    string[] patterns = ["Toad", "Glider", "Die Hard", "Lightweight Spaceship"];
+    int currentIndex = 0;
+    while (true)
+    {
+      switch (currentIndex)
+      {
+        case 0: // toad pattern
+          cellArray[9, 19] = "██";
+          cellArray[9, 20] = "██";
+          cellArray[9, 21] = "██";
+          cellArray[10, 18] = "██";
+          cellArray[10, 19] = "██";
+          cellArray[10, 20] = "██";
+          break;
+        case 1: // glider pattern
+          cellArray[2, 4] = "██";
+          cellArray[3, 5] = "██";
+          cellArray[4, 3] = "██";
+          cellArray[4, 4] = "██";
+          cellArray[4, 5] = "██";
+          break;
+        case 2: // Die hard pattern
+          cellArray[10, 21] = "██";
+          cellArray[11, 15] = "██";
+          cellArray[11, 16] = "██";
+          cellArray[12, 16] = "██";
+          cellArray[12, 20] = "██";
+          cellArray[12, 21] = "██";
+          cellArray[12, 22] = "██";
+          break;
+        case 3: // Lightweight Spaceship pattern
+          cellArray[8, 11] = "██";
+          cellArray[8, 12] = "██";
+          cellArray[8, 13] = "██";
+          cellArray[8, 14] = "██";
+          cellArray[9, 10] = "██";
+          cellArray[9, 14] = "██";
+          cellArray[10, 14] = "██";
+          cellArray[11, 10] = "██";
+          cellArray[11, 13] = "██";
+          break;
+        default:
+          break;
+      }
+      PrintCellArray(cellArray);
+      PrintMenu(patterns, currentIndex);
+      int result = MenuSelect(patterns, currentIndex);
+      if (result == -1) break; // user made selection, exit menu loop
+      currentIndex = result;
+      cellArray = InitializeArray(arrayHeight, arrayWidth);
+    }
+    Console.Clear();
+    return cellArray;
+  }
+
+  static string ApplyGameOfLifeRules(string currentCell, int neighbors)
+  {
+    if (currentCell == "  " && neighbors == 3) return "██"; // becomes live if dead and 3 neighbors
+    if (currentCell == "██")
+      return neighbors switch
+      {
+        < 2 => "  ", // dies if less than 2 neighbors
+        > 3 => "  ", // dies if more than 3 neighbors
+        _ => "██", // lives to next generation if 2-3 neighbors
+      };
+    return currentCell;
   }
 }
