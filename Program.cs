@@ -119,16 +119,16 @@ internal class Program
     };
   }
 
-// ==================================================
-// Kryds & Bolle
-// Af: Matias
-// ==================================================
-public static void XO()
-{ 
+  // ==================================================
+  // Kryds & Bolle
+  // Af: Matias
+  // ==================================================
+  public static void XO()
+  {
     string playerToken = rnd.Next(0, 2) == 0 ? "X" : "O"; // Gemmer spillerens type af spilbrik.
     string botToken = playerToken == "X" ? "O" : "X"; // Tildeler den anden brik til bot'en.
     string userInput = "";
-    string[,] gameBoard = {{ " ", " ", " " },{ " ", " ", " " },{ " ", " ", " " }}; // Opretter spilbrættet som en matrix.
+    string[,] gameBoard = { { " ", " ", " " }, { " ", " ", " " }, { " ", " ", " " } }; // Opretter spilbrættet som en matrix.
     string msgWelcome = "Din modstander {randomBotName} har udfordret dig. Tryk ENTER for at få dine brikker...\n";
     string msgTokenX = "Du har fået kryds (X) derfor begynder du. Tryk ENTER for at begynde spillet...";
     string msgTokenO = "Du har fået bolle (O) derfor begynder {randomBotName}. Tryk ENTER for at begynde spillet...";
@@ -161,133 +161,134 @@ public static void XO()
     //Tur tagning
     while (!winCondition)
     {
-        if (playerToken == "X")
-        {
-            playerTurn();
-            botTurn();
-        }
-        else
-        {
-            botTurn();
-            playerTurn();
-        }
+      if (playerToken == "X")
+      {
+        playerTurn();
+        botTurn();
+      }
+      else
+      {
+        botTurn();
+        playerTurn();
+      }
     }
 
     void botTurn()
     {
-        if (botTokenCount < 3)
-        {
-            botPlaceToken();
-        }
-        else
-        {
-            botRemoveToken();
-            botPlaceToken();
-        }
+      if (botTokenCount < 3)
+      {
+        botPlaceToken();
+      }
+      else
+      {
+        botRemoveToken();
+        botPlaceToken();
+      }
 
     }
 
     void botRemoveToken()
     {
-        int x = rnd.Next(0, 3);
-        int y = rnd.Next(0, 3);
+      int x = rnd.Next(0, 3);
+      int y = rnd.Next(0, 3);
 
-        if (gameBoard[x, y] == botToken)
-        {
-            gameBoard[x, y] = " ";
-            botTokenCount--;
-            removedToken = (x, y);
-        }
-        else
-        {
-            botRemoveToken();
-        }
+      if (gameBoard[x, y] == botToken)
+      {
+        gameBoard[x, y] = " ";
+        botTokenCount--;
+        removedToken = (x, y);
+      }
+      else
+      {
+        botRemoveToken();
+      }
     }
 
     void botPlaceToken()
     {
-        int x = rnd.Next(0, 3);
-        int y = rnd.Next(0, 3);
+      int x = rnd.Next(0, 3);
+      int y = rnd.Next(0, 3);
 
-        bool isEmpty = gameBoard[x, y] == " ";
-        bool newPosition = removedToken.x != x && removedToken.y != y; 
+      bool isEmpty = gameBoard[x, y] == " ";
+      bool newPosition = removedToken.x != x && removedToken.y != y;
 
-        if (isEmpty && newPosition) 
-        {
-            gameBoard[x, y] = botToken;
-            botTokenCount++;
-            updateBoard();
-        }
-        else
-        {
-            botPlaceToken();
-        }
+      if (isEmpty && newPosition)
+      {
+        gameBoard[x, y] = botToken;
+        botTokenCount++;
+        updateBoard();
+      }
+      else
+      {
+        botPlaceToken();
+      }
     }
 
     void playerTurn()
     {
-        if (playerTokenCount < 3)
-        {
-            playerPlaceToken();
-        }
-        else
-        {
-            playerRemoveToken();
-            playerPlaceToken();
-        }
+      if (playerTokenCount < 3)
+      {
+        playerPlaceToken();
+      }
+      else
+      {
+        playerRemoveToken();
+        playerPlaceToken();
+      }
     }
 
     void playerRemoveToken()
     {
-        userInput = Console.ReadLine();
-        int x = userInput[0] - 'a';
-        int y = userInput.Length > 1 ? int.Parse(userInput[1].ToString()) - 1 : -1;
+      userInput = Console.ReadLine();
+      int x = userInput[0] - 'a';
+      int y = userInput.Length > 1 ? int.Parse(userInput[1].ToString()) - 1 : -1;
 
-        if (userInput == "q")
-        {
-            Environment.Exit(0);
-        } else if (gameBoard[x, y] == playerToken)
-        {
-            gameBoard[x, y] = " ";
-            playerTokenCount--;
-            removedToken = (x, y);
-        }
-        else
-        {
-            botRemoveToken();
-        }
+      if (userInput == "q")
+      {
+        Environment.Exit(0);
+      }
+      else if (gameBoard[x, y] == playerToken)
+      {
+        gameBoard[x, y] = " ";
+        playerTokenCount--;
+        removedToken = (x, y);
+      }
+      else
+      {
+        botRemoveToken();
+      }
     }
 
     void playerPlaceToken()
     {
-        userInput = Console.ReadLine();
-        int x = userInput[0] - 'a';
-        int y = userInput.Length > 1 ? int.Parse(userInput[1].ToString()) - 1 : -1;
+      userInput = Console.ReadLine();
+      int x = userInput[0] - 'a';
+      int y = userInput.Length > 1 ? int.Parse(userInput[1].ToString()) - 1 : -1;
 
-        if (userInput == "q")
-        {
-            Environment.Exit(0);
-        }
-        else
-        {
-            gameBoard[x, y] = playerToken;
-            playerTokenCount++;
-            updateBoard();
-        }
+      if (userInput == "q")
+      {
+        Environment.Exit(0);
+      }
+      else
+      {
+        gameBoard[x, y] = playerToken;
+        playerTokenCount++;
+        updateBoard();
+      }
     }
 
     void updateBoard() // Renderer spilbrættets data i et indrammet spilbræt.
-        {
-            gameHeader();
+    {
+      gameHeader();
 
-            //Symboler brugt til at bygge spilbrætrammen.
-            string borderPipe = "| ";
-            string borderEmDash = "— ";
-            string borderSpace = "  ";
+      //Symboler brugt til at bygge spilbrætrammen.
+      string borderPipe = "| ";
+      string borderEmDash = "— ";
+      string borderSpace = "  ";
 
-            // Indsætter spilbrættet i en ramme.
-            string[,] gameBorders =
-            {
+      // Indsætter spilbrættet i en ramme.
+      string[,] gameBorders =
+      {
                 { borderSpace, borderSpace, "1 ", borderSpace, "2 ", borderSpace, "3 ", borderSpace },
                 { borderSpace, borderSpace, borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderSpace },
                 { "a ", borderPipe, gameBoard[0, 0] + " ", borderPipe, gameBoard[0, 1] + " ", borderPipe, gameBoard[0, 2] + " ", borderPipe },
@@ -322,7 +323,8 @@ public static void XO()
             XOXOXOXOXOXOXOXOXOXO
 
             """);
-    };
+    }
+    ;
 
 
   }
@@ -434,14 +436,16 @@ public static void XO()
     Console.WriteLine("Guess a number between 1-100");
     for (int i = 0; i < numPlayers; i++)
     {
+      int lengthUserGuess = 0;
       while (true)
       {
-        Console.Write($"{playerNames[i]}: ");
+        Console.SetCursorPosition(0, 17);
+        Console.Write($"{playerNames[i]}: {new string(' ', lengthUserGuess)}"); // spaces to cover incorrect answer
+        Console.SetCursorPosition(playerNames[i].Length + 2, 17); // sets cursor after player name:
         string guess = Console.ReadLine() ?? "";
-        if (int.TryParse(guess, out guesses[i]))
-        {
-          break;
-        }
+        lengthUserGuess = guess.Length;
+        if (!int.TryParse(guess, out guesses[i])) continue;
+        if (guesses[i] > 0 && guesses[i] <= 100) break;
       }
     }
     if (numPlayers == 1) guesses[1] = rnd.Next(1, 101); // assign the computer a guess
