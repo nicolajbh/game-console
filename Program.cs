@@ -164,12 +164,12 @@ public static void XO()
         if (playerToken == "X")
         {
             playerTurn();
-            botTurn();
+            if (!winCondition) { botTurn(); }
         }
         else
         {
             botTurn();
-            playerTurn();
+            if (!winCondition) { playerTurn(); }
         }
     }
 
@@ -217,6 +217,7 @@ public static void XO()
             gameBoard[x, y] = botToken;
             botTokenCount++;
             updateBoard();
+            endGame();
         }
         else
         {
@@ -273,6 +274,7 @@ public static void XO()
             gameBoard[x, y] = playerToken;
             playerTokenCount++;
             updateBoard();
+            endGame();
         }
     }
 
@@ -324,7 +326,51 @@ public static void XO()
             """);
     };
 
+    void endGame()
+        {
+            string a1 = gameBoard[0, 0], a2 = gameBoard[0, 1], a3 = gameBoard[0, 2], b1 = gameBoard[1, 0], b2 = gameBoard[1, 1], b3 = gameBoard[1, 2], c1 = gameBoard[2, 0], c2 = gameBoard[2, 1], c3 = gameBoard[2, 2];
+            var lines = new Dictionary<string, string[]>
+            {
+                { "a1:a3", new string[] { a1, a2, a3 } },
+                { "b1:b3", new string[] { b1, b2, b3 } },
+                { "c1:c3", new string[] { c1, c2, c3 } },
+                { "a1:c1", new string[] { a1, b1, c1 } },
+                { "a2:c2", new string[] { a2, b2, c2 } },
+                { "a3:c3", new string[] { a3, b3, c3 } },
+                { "a1:c3", new string[] { a1, b2, c3 } },
+                { "a3:c1", new string[] { a3, b2, c1 } }
+            };
 
+            foreach (var line in lines)
+            {
+                int countX = 0;
+                int countO = 0;
+
+                foreach (string position in line.Value)
+                {
+                    switch (position)
+                    {
+                        case "X": countX++;
+                            break;
+                        case "O": countO++;
+                            break;
+                        default: break;
+
+                    }
+                }
+
+                if (countX > 2)
+                {
+                    winCondition = true;
+                    break;
+                } 
+                else if (countO > 2)
+                {
+                    winCondition = true;
+                    break;
+                }
+            }
+        }
   }
 
 
