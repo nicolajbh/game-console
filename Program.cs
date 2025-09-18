@@ -119,22 +119,23 @@ internal class Program
     };
   }
 
-  // ==================================================
-  // Kryds & Bolle
-  // Af: Matias
-  // ==================================================
-  public static void XO()
-  {
-    string playerToken; //Gemmer menneskespillerens type af spilbrik.
+// ==================================================
+// Kryds & Bolle
+// Af: Matias
+// ==================================================
+public static void XO()
+{ 
+    string playerToken = rnd.Next(0, 2) == 0 ? "X" : "O"; // Gemmer spillerens type af spilbrik.
+    string botToken = playerToken == "X" ? "O" : "X"; // Tildeler den anden brik til bot'en.
     string userInput = "";
-    string[,] gameBoard = { { " ", " ", " " }, { " ", " ", " " }, { " ", " ", " " } }; //Opretter spilbrættet som en matrix.
-    string tokenX = "X";
-    string tokenO = "O";
+    string[,] gameBoard = {{ " ", " ", " " },{ " ", " ", " " },{ " ", " ", " " }}; // Opretter spilbrættet som en matrix.
     string msgWelcome = "Din modstander {randomBotName} har udfordret dig. Tryk ENTER for at få dine brikker...\n";
     string msgTokenX = "Du har fået kryds (X) derfor begynder du. Tryk ENTER for at begynde spillet...";
     string msgTokenO = "Du har fået bolle (O) derfor begynder {randomBotName}. Tryk ENTER for at begynde spillet...";
-    int x;
-    int y;
+    int botTokenCount = 0;
+    int playerTokenCount = 0;
+    bool winCondition = false;
+    (int x, int y) removedToken = (-1, -1); // Bruger Tuple frem for Array da det gør min boolean condition i botPlaceToken() mere læsbar.
 
     // Velkomstbesked
     gameHeader();
@@ -144,7 +145,7 @@ internal class Program
     Console.ReadKey();
     gameHeader();
     Console.WriteLine(
-        (playerToken = rnd.Next(0, 2) == 0 ? "X" : "O") switch
+        (playerToken) switch
         {
           "X" => msgTokenX,
           "O" => msgTokenO,
@@ -157,35 +158,137 @@ internal class Program
     gameHeader();
     updateBoard();
 
-    while (userInput != "q")
+    //Tur tagning
+    while (!winCondition)
     {
-      userInput = Console.ReadLine();
-
-      if (userInput == "q")
-      {
-        break;
-      }
-      else
-      {
-        x = userInput[0] - 'a';
-        y = int.Parse(userInput[1].ToString()) - 1;
-        gameBoard[x, y] = playerToken;
-        updateBoard();
-      }
+        if (playerToken == "X")
+        {
+            playerTurn();
+            botTurn();
+        }
+        else
+        {
+            botTurn();
+            playerTurn();
+        }
     }
 
-    void updateBoard() // Renderer spilbrættets data i et indrammet spilbræt.
-    {
-      gameHeader();
+        void botTurn()
+        {
+            if (botTokenCount < 3)
+            {
+                botPlaceToken();
+            }
+            else
+            {
+                botRemoveToken();
+                botPlaceToken();
+            }
 
-      //Symboler brugt til at bygge spilbrætrammen.
-      string borderPipe = "| ";
-      string borderEmDash = "— ";
-      string borderSpace = "  ";
+        }
 
-      // Indsætter spilbrættet i en ramme.
-      string[,] gameBorders =
-      {
+        void botRemoveToken()
+        {
+            int x = rnd.Next(0, 3);
+            int y = rnd.Next(0, 3);
+
+            if (gameBoard[x, y] == botToken)
+            {
+                gameBoard[x, y] = " ";
+                botTokenCount--;
+                removedToken = (x, y);
+            }
+            else
+            {
+                botRemoveToken();
+            }
+        }
+
+        void botPlaceToken()
+        {
+            int x = rnd.Next(0, 3);
+            int y = rnd.Next(0, 3);
+
+            bool isEmpty = gameBoard[x, y] == " ";
+            bool newPosition = removedToken.x != x && removedToken.y != y; 
+
+            if (isEmpty && newPosition) 
+            {
+                gameBoard[x, y] = botToken;
+                botTokenCount++;
+                updateBoard();
+            }
+            else
+            {
+                botPlaceToken();
+            }
+        }
+
+        void playerTurn()
+        {
+            Console.WriteLine(playerTokenCount);
+            if (playerTokenCount < 3)
+            {
+                playerPlaceToken();
+            }
+            else
+            {
+                playerRemoveToken();
+                playerPlaceToken();
+            }
+        }
+
+        void playerRemoveToken()
+        {
+            userInput = Console.ReadLine();
+            int x = userInput[0] - 'a';
+            int y = userInput.Length > 1 ? int.Parse(userInput[1].ToString()) - 1 : -1;
+
+            if (userInput == "q")
+            {
+                Environment.Exit(0);
+            } else if (gameBoard[x, y] == playerToken)
+            {
+                gameBoard[x, y] = " ";
+                playerTokenCount--;
+                removedToken = (x, y);
+            }
+            else
+            {
+                botRemoveToken();
+            }
+        }
+
+        void playerPlaceToken()
+        {
+            userInput = Console.ReadLine();
+            int x = userInput[0] - 'a';
+            int y = userInput.Length > 1 ? int.Parse(userInput[1].ToString()) - 1 : -1;
+
+            if (userInput == "q")
+            {
+                Environment.Exit(0);
+            }
+            else
+            {
+                gameBoard[x, y] = playerToken;
+                playerTokenCount++;
+                updateBoard();
+            }
+        }
+
+        void updateBoard() // Renderer spilbrættets data i et indrammet spilbræt.
+        {
+            gameHeader();
+
+            //Symboler brugt til at bygge spilbrætrammen.
+            string borderPipe = "| ";
+            string borderEmDash = "— ";
+            string borderSpace = "  ";
+
+            // Indsætter spilbrættet i en ramme.
+            string[,] gameBorders =
+            {
                 { borderSpace, borderSpace, "1 ", borderSpace, "2 ", borderSpace, "3 ", borderSpace },
                 { borderSpace, borderSpace, borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderEmDash, borderSpace },
                 { "a ", borderPipe, gameBoard[0, 0] + " ", borderPipe, gameBoard[0, 1] + " ", borderPipe, gameBoard[0, 2] + " ", borderPipe },
