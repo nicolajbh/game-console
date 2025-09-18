@@ -12,8 +12,7 @@ internal class Program
   }
 
   /// <summary>
-  /// Controller for main menu
-  /// Contains dictionary of game titles and actions to start the game
+  /// Creates main menu, handles user navigation and starts selected game
   /// </summary>
   static void ShowMainMenu()
   {
@@ -171,28 +170,28 @@ internal class Program
 
     while (true)
     {
-        if (PlayAgain() == 0) break; // user selected N
-        else { XO(); }
+      if (PlayAgain() == 0) break; // user selected N
+      else { XO(); }
     }
     ShowMainMenu();
 
     void RunXO()
     {
-        while (!winCondition)
+      while (!winCondition)
+      {
+        if (playerToken == "X")
         {
-            if (playerToken == "X")
-            {
-                playerTurn();
-                if (!winCondition) { botTurn(); }
-            }
-            else
-            {
-                botTurn();
-                if (!winCondition) { playerTurn(); }
-            }
+          playerTurn();
+          if (!winCondition) { botTurn(); }
         }
+        else
+        {
+          botTurn();
+          if (!winCondition) { playerTurn(); }
+        }
+      }
 
-        Console.ReadKey();
+      Console.ReadKey();
     }
 
     void botTurn()
