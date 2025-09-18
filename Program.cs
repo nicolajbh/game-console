@@ -173,111 +173,110 @@ public static void XO()
         }
     }
 
-        void botTurn()
+    void botTurn()
+    {
+        if (botTokenCount < 3)
         {
-            if (botTokenCount < 3)
-            {
-                botPlaceToken();
-            }
-            else
-            {
-                botRemoveToken();
-                botPlaceToken();
-            }
-
+            botPlaceToken();
+        }
+        else
+        {
+            botRemoveToken();
+            botPlaceToken();
         }
 
-        void botRemoveToken()
+    }
+
+    void botRemoveToken()
+    {
+        int x = rnd.Next(0, 3);
+        int y = rnd.Next(0, 3);
+
+        if (gameBoard[x, y] == botToken)
         {
-            int x = rnd.Next(0, 3);
-            int y = rnd.Next(0, 3);
-
-            if (gameBoard[x, y] == botToken)
-            {
-                gameBoard[x, y] = " ";
-                botTokenCount--;
-                removedToken = (x, y);
-            }
-            else
-            {
-                botRemoveToken();
-            }
+            gameBoard[x, y] = " ";
+            botTokenCount--;
+            removedToken = (x, y);
         }
-
-        void botPlaceToken()
+        else
         {
-            int x = rnd.Next(0, 3);
-            int y = rnd.Next(0, 3);
-
-            bool isEmpty = gameBoard[x, y] == " ";
-            bool newPosition = removedToken.x != x && removedToken.y != y; 
-
-            if (isEmpty && newPosition) 
-            {
-                gameBoard[x, y] = botToken;
-                botTokenCount++;
-                updateBoard();
-            }
-            else
-            {
-                botPlaceToken();
-            }
+            botRemoveToken();
         }
+    }
 
-        void playerTurn()
+    void botPlaceToken()
+    {
+        int x = rnd.Next(0, 3);
+        int y = rnd.Next(0, 3);
+
+        bool isEmpty = gameBoard[x, y] == " ";
+        bool newPosition = removedToken.x != x && removedToken.y != y; 
+
+        if (isEmpty && newPosition) 
         {
-            Console.WriteLine(playerTokenCount);
-            if (playerTokenCount < 3)
-            {
-                playerPlaceToken();
-            }
-            else
-            {
-                playerRemoveToken();
-                playerPlaceToken();
-            }
+            gameBoard[x, y] = botToken;
+            botTokenCount++;
+            updateBoard();
         }
-
-        void playerRemoveToken()
+        else
         {
-            userInput = Console.ReadLine();
-            int x = userInput[0] - 'a';
-            int y = userInput.Length > 1 ? int.Parse(userInput[1].ToString()) - 1 : -1;
-
-            if (userInput == "q")
-            {
-                Environment.Exit(0);
-            } else if (gameBoard[x, y] == playerToken)
-            {
-                gameBoard[x, y] = " ";
-                playerTokenCount--;
-                removedToken = (x, y);
-            }
-            else
-            {
-                botRemoveToken();
-            }
+            botPlaceToken();
         }
+    }
 
-        void playerPlaceToken()
+    void playerTurn()
+    {
+        if (playerTokenCount < 3)
         {
-            userInput = Console.ReadLine();
-            int x = userInput[0] - 'a';
-            int y = userInput.Length > 1 ? int.Parse(userInput[1].ToString()) - 1 : -1;
-
-            if (userInput == "q")
-            {
-                Environment.Exit(0);
-            }
-            else
-            {
-                gameBoard[x, y] = playerToken;
-                playerTokenCount++;
-                updateBoard();
-            }
+            playerPlaceToken();
         }
+        else
+        {
+            playerRemoveToken();
+            playerPlaceToken();
+        }
+    }
 
-        void updateBoard() // Renderer spilbrættets data i et indrammet spilbræt.
+    void playerRemoveToken()
+    {
+        userInput = Console.ReadLine();
+        int x = userInput[0] - 'a';
+        int y = userInput.Length > 1 ? int.Parse(userInput[1].ToString()) - 1 : -1;
+
+        if (userInput == "q")
+        {
+            Environment.Exit(0);
+        } else if (gameBoard[x, y] == playerToken)
+        {
+            gameBoard[x, y] = " ";
+            playerTokenCount--;
+            removedToken = (x, y);
+        }
+        else
+        {
+            botRemoveToken();
+        }
+    }
+
+    void playerPlaceToken()
+    {
+        userInput = Console.ReadLine();
+        int x = userInput[0] - 'a';
+        int y = userInput.Length > 1 ? int.Parse(userInput[1].ToString()) - 1 : -1;
+
+        if (userInput == "q")
+        {
+            Environment.Exit(0);
+        }
+        else
+        {
+            gameBoard[x, y] = playerToken;
+            playerTokenCount++;
+            updateBoard();
+        }
+    }
+
+    void updateBoard() // Renderer spilbrættets data i et indrammet spilbræt.
         {
             gameHeader();
 
@@ -323,8 +322,9 @@ public static void XO()
             XOXOXOXOXOXOXOXOXOXO
 
             """);
-    }
-    ;
+    };
+
+
   }
 
 
