@@ -11,6 +11,10 @@ internal class Program
     ShowMainMenu();
   }
 
+  /// <summary>
+  /// Controller for main menu
+  /// Contains dictionary of game titles and actions to start the game
+  /// </summary>
   static void ShowMainMenu()
   {
     var gameMenu = new Dictionary<string, Action>
@@ -36,7 +40,7 @@ internal class Program
         selectedGame == "Exit"
         ? "Exiting..."
         : $"Starting {selectedGame}"
-        );
+        ); // message for loading screen
 
     Thread.Sleep(2000); // simulate game loading
     gameMenu[selectedGame]();
@@ -101,6 +105,11 @@ internal class Program
     };
   }
 
+  /// <summary>
+  /// Prompts the user if they want to play again
+  /// Validates input so that user can only select Y or N
+  /// </summary>
+  /// <returns> 1 if Y, 0 if N, else -1 (error) </returns>
   static int PlayAgain()
   {
     Console.Clear();
@@ -225,17 +234,17 @@ internal class Program
       bool isEmpty = gameBoard[x, y] == " ";
       bool newPosition = removedToken.x != x && removedToken.y != y;
 
-        if (isEmpty && newPosition) 
-        {
-            gameBoard[x, y] = botToken;
-            botTokenCount++;
-            updateBoard();
-            endGame();
-        }
-        else
-        {
-            botPlaceToken();
-        }
+      if (isEmpty && newPosition)
+      {
+        gameBoard[x, y] = botToken;
+        botTokenCount++;
+        updateBoard();
+        endGame();
+      }
+      else
+      {
+        botPlaceToken();
+      }
     }
 
     void playerTurn()
@@ -279,17 +288,17 @@ internal class Program
       int x = userInput[0] - 'a';
       int y = userInput.Length > 1 ? int.Parse(userInput[1].ToString()) - 1 : -1;
 
-        if (userInput == "q")
-        {
-            Environment.Exit(0);
-        }
-        else
-        {
-            gameBoard[x, y] = playerToken;
-            playerTokenCount++;
-            updateBoard();
-            endGame();
-        }
+      if (userInput == "q")
+      {
+        Environment.Exit(0);
+      }
+      else
+      {
+        gameBoard[x, y] = playerToken;
+        playerTokenCount++;
+        updateBoard();
+        endGame();
+      }
     }
 
     void updateBoard() // Renderer spilbrættets data i et indrammet spilbræt.
@@ -342,9 +351,9 @@ internal class Program
     ;
 
     void endGame()
-        {
-            string a1 = gameBoard[0, 0], a2 = gameBoard[0, 1], a3 = gameBoard[0, 2], b1 = gameBoard[1, 0], b2 = gameBoard[1, 1], b3 = gameBoard[1, 2], c1 = gameBoard[2, 0], c2 = gameBoard[2, 1], c3 = gameBoard[2, 2];
-            var lines = new Dictionary<string, string[]>
+    {
+      string a1 = gameBoard[0, 0], a2 = gameBoard[0, 1], a3 = gameBoard[0, 2], b1 = gameBoard[1, 0], b2 = gameBoard[1, 1], b3 = gameBoard[1, 2], c1 = gameBoard[2, 0], c2 = gameBoard[2, 1], c3 = gameBoard[2, 2];
+      var lines = new Dictionary<string, string[]>
             {
                 { "a1:a3", new string[] { a1, a2, a3 } },
                 { "b1:b3", new string[] { b1, b2, b3 } },
@@ -356,36 +365,38 @@ internal class Program
                 { "a3:c1", new string[] { a3, b2, c1 } }
             };
 
-            foreach (var line in lines)
-            {
-                int countX = 0;
-                int countO = 0;
+      foreach (var line in lines)
+      {
+        int countX = 0;
+        int countO = 0;
 
-                foreach (string position in line.Value)
-                {
-                    switch (position)
-                    {
-                        case "X": countX++;
-                            break;
-                        case "O": countO++;
-                            break;
-                        default: break;
+        foreach (string position in line.Value)
+        {
+          switch (position)
+          {
+            case "X":
+              countX++;
+              break;
+            case "O":
+              countO++;
+              break;
+            default: break;
 
-                    }
-                }
-
-                if (countX > 2)
-                {
-                    winCondition = true;
-                    break;
-                } 
-                else if (countO > 2)
-                {
-                    winCondition = true;
-                    break;
-                }
-            }
+          }
         }
+
+        if (countX > 2)
+        {
+          winCondition = true;
+          break;
+        }
+        else if (countO > 2)
+        {
+          winCondition = true;
+          break;
+        }
+      }
+    }
   }
 
 
@@ -394,6 +405,9 @@ internal class Program
   // Af: Nicolaj
   // ==================================================
 
+  /// <summary>
+  /// Controller for the number battle game
+  /// </summary>
   static void PlayNumberGame()
   {
     // TODO alternate who starts each turn
@@ -407,6 +421,9 @@ internal class Program
     ShowMainMenu();
   }
 
+  /// <summary>
+  /// Starts a game loop for the number battle game
+  /// </summary>
   static void NumberGame()
   {
     Console.Clear();
@@ -432,6 +449,9 @@ internal class Program
     PrintWinner(playerNames, healthPlayerOne, healthPlayerTwo);
   }
 
+  /// <summary>
+  /// Prints the winner of the game to console
+  /// </summary>
   static void PrintWinner(string[] playerNames, int healthPlayerOne, int healthPlayerTwo)
   {
     Console.Clear();
@@ -539,7 +559,7 @@ internal class Program
       Console.WriteLine(line);
     }
     Console.WriteLine($"     HP [{new string('#', healthPlayerOne / 10),-10}]                            HP [{new string('#', healthPlayerTwo / 10),-10}]");
-    Console.WriteLine($"             {playerNames[0]}                                   {playerNames[1]}");
+    Console.WriteLine($"     {playerNames[0]}                                                            {playerNames[1]}");
     Console.WriteLine();
   }
 
@@ -572,6 +592,9 @@ internal class Program
     }
   }
 
+  /// <summary>
+  /// Prints the intro screen for number battle and waits for user input to proceed
+  /// </summary>
   static void NumberGameIntro()
   {
     Console.Clear();
@@ -591,6 +614,9 @@ internal class Program
   // Af: Nicolaj
   // ==================================================
 
+  /// <summary>
+  /// Controller for Game of Life
+  /// </summary>
   static void PlayGameOfLife()
   {
     GameOfLifeIntro();
@@ -602,6 +628,9 @@ internal class Program
     ShowMainMenu();
   }
 
+  /// <summary>
+  /// Starts a game loop of Game Of Life 
+  /// </summary>
   static void GameOfLife()
   {
     Console.Clear();
@@ -610,7 +639,7 @@ internal class Program
     int arrayWidth = 40;
 
     string[,] cellArray = SelectPattern(arrayHeight, arrayWidth);
-    while (!Console.KeyAvailable)
+    while (!Console.KeyAvailable) // exit loop once user presses a key
     {
       PrintCellArray(cellArray);
       string[,] newArray = InitializeArray(arrayHeight, arrayWidth);
@@ -633,6 +662,9 @@ internal class Program
     }
   }
 
+  /// <summary>
+  /// Prints the intro screen for Conway's Game of Life with short description and waits for user input to proceed
+  /// </summary>
   static void GameOfLifeIntro()
   {
     Console.Clear();
@@ -665,8 +697,9 @@ internal class Program
   }
 
   /// <summary>
-  /// Counts number of live neighbors for cell[row, col]
+  /// Loops through the 8 neighbors for cellArray[i, j] and sums cells containing string "██" (alive cell)
   /// </summary>
+  /// <returns> int: Number of live neighbors for cellArray[row, col]
   static int CountNeighbors(int row, int col, string[,] cellArray)
   {
     int liveNeighbors = 0;
@@ -762,15 +795,19 @@ internal class Program
       int result = MenuSelect(patterns, currentIndex);
       if (result == -1) break; // user made selection, exit menu loop
       currentIndex = result;
-      cellArray = InitializeArray(arrayHeight, arrayWidth);
+      cellArray = InitializeArray(arrayHeight, arrayWidth); // clear array
     }
     Console.Clear();
     return cellArray;
   }
 
+  /// <summary>
+  /// Applies the rules of Game of Life to currentCell based on neigbors
+  /// </summary>
+  /// <returns> string "  " or "██" </returns>
   static string ApplyGameOfLifeRules(string currentCell, int neighbors)
   {
-    if (currentCell == "  " && neighbors == 3) return "██"; // becomes live if dead and 3 neighbors
+    if (currentCell == "  " && neighbors == 3) return "██"; // cell becomes live if dead and 3 neighbors
     if (currentCell == "██")
       return neighbors switch
       {
