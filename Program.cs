@@ -3,6 +3,7 @@ using System.Threading.Channels;
 
 internal class Program
 {
+  // global random number generator object
   static Random rnd = new();
 
   public static void Main(string[] args)
@@ -16,7 +17,7 @@ internal class Program
   /// </summary>
   static void ShowMainMenu()
   {
-    var gameMenu = new Dictionary<string, Action>
+    var gameMenu = new Dictionary<string, Action> // map game titles to actions to start game
     {
       { "Number Battle", PlayNumberGame},
       { "Kryds & Bolle", XO },
@@ -24,7 +25,7 @@ internal class Program
       { "Exit", () => Environment.Exit(0) }
     };
     var menuTitles = gameMenu.Keys.ToArray();
-    int selectedIndex = 0;
+    int selectedIndex = 0; // index to track selected menu item
     while (true)
     {
       Console.Clear();
@@ -97,8 +98,8 @@ internal class Program
   {
     return Console.ReadKey().Key switch
     {
-      ConsoleKey.UpArrow => Math.Max(0, currentIndex - 1),
-      ConsoleKey.DownArrow => Math.Min(menuTitles.Length - 1, currentIndex + 1),
+      ConsoleKey.UpArrow => Math.Max(0, currentIndex - 1), // prevent negative index
+      ConsoleKey.DownArrow => Math.Min(menuTitles.Length - 1, currentIndex + 1), // prevent index going over lenght of menu
       ConsoleKey.Enter => -1,
       _ => currentIndex,
     };
@@ -424,7 +425,7 @@ internal class Program
   }
 
   /// <summary>
-  /// Starts a game loop for the number battle game
+  /// Game loop for the number battle game
   /// </summary>
   static void NumberGame()
   {
@@ -440,10 +441,6 @@ internal class Program
     {
       PrintGame(playerNames, healthPlayerOne, healthPlayerTwo);
       int[] guesses = GetUserGuess(playerNames, numPlayers);
-      if (playerNames[1] == "Computer")
-      {
-        Console.WriteLine($"{playerNames[1]} guesses {guesses[1]}");
-      }
       Thread.Sleep(2000); // delay before revealing answer
       ApplyDamage(playerNames, guesses, ref healthPlayerOne, ref healthPlayerTwo);
       Console.ReadKey(); // wait for user input to start next round
@@ -452,7 +449,7 @@ internal class Program
   }
 
   /// <summary>
-  /// Prints the winner of the game to console
+  /// Check winner and print the winner of the game to console
   /// </summary>
   static void PrintWinner(string[] playerNames, int healthPlayerOne, int healthPlayerTwo)
   {
@@ -520,16 +517,20 @@ internal class Program
       int lengthUserGuess = 0;
       while (true)
       {
-        Console.SetCursorPosition(0, 17);
+        Console.SetCursorPosition(0, 17); // sets cursor position below ascii art
         Console.Write($"{playerNames[i]}: {new string(' ', lengthUserGuess)}"); // spaces to cover incorrect answer
         Console.SetCursorPosition(playerNames[i].Length + 2, 17); // sets cursor after player name:
         string guess = Console.ReadLine() ?? "";
         lengthUserGuess = guess.Length;
-        if (!int.TryParse(guess, out guesses[i])) continue;
+        if (!int.TryParse(guess, out guesses[i])) continue; // check user input an integer
         if (guesses[i] > 0 && guesses[i] <= 100) break;
       }
     }
-    if (numPlayers == 1) guesses[1] = rnd.Next(1, 101); // assign the computer a guess
+    if (numPlayers == 1) // handle computer actions
+    {
+      guesses[1] = rnd.Next(1, 101); // assign the computer a guess
+      Console.WriteLine($"{playerNames[1]} guesses {guesses[1]}");
+    }
     return guesses;
   }
 
@@ -636,7 +637,7 @@ internal class Program
   static void GameOfLife()
   {
     Console.Clear();
-    Console.CursorVisible = false;
+    Console.CursorVisible = false; // hide cursor during game
     int arrayHeight = 20;
     int arrayWidth = 40;
 
@@ -660,7 +661,7 @@ internal class Program
     if (Console.KeyAvailable)
     {
       Console.ReadKey(true); // consume key
-      Console.CursorVisible = true;
+      Console.CursorVisible = true; // re-enable cursor after user stops the simulation
     }
   }
 
@@ -687,7 +688,7 @@ internal class Program
   /// </summary>
   static void PrintCellArray(string[,] cellArray)
   {
-    Console.SetCursorPosition(0, 0);
+    Console.SetCursorPosition(0, 0); // write over existing output for better animation
     for (int i = 0; i < cellArray.GetLength(0); i++)
     {
       for (int j = 0; j < cellArray.GetLength(1); j++)
@@ -709,9 +710,10 @@ internal class Program
     {
       for (int j = -1; j <= 1; j++)
       {
-        if (i == 0 && j == 0) continue;
+        if (i == 0 && j == 0) continue; // skip current cell
         int newRow = row + i;
         int newCol = col + j;
+        // boundary checking
         if (newRow < 0 || newRow >= cellArray.GetLength(0) ||
             newCol < 0 || newCol >= cellArray.GetLength(1)) continue;
         if (cellArray[newRow, newCol] == "██")
