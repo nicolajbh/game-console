@@ -138,17 +138,17 @@ internal class Program
   ///For at placerer en spil brik indtaster spilleren et koordinate i formattet 'a1' (uden citering).
   ///</summary>
   {
-    string playerToken = rnd.Next(0, 2) == 0 ? "X" : "O"; // Gemmer spillerens type af spilbrik.
-    string botToken = playerToken == "X" ? "O" : "X"; // Tildeler den anden brik til bot'en.
-    string userInput = "";
-    string[,] gameBoard = { { " ", " ", " " }, { " ", " ", " " }, { " ", " ", " " } }; // Opretter spilbrættet som en matrix.
+    string playerToken = rnd.Next(0, 2) == 0 ? "X" : "O"; // Gemmer spillers brik symbol. 
+    string botToken = playerToken == "X" ? "O" : "X"; // Gemmer bot'ens brik symbol. 
+        string userInput = "";
+    string[,] gameBoard = { { " ", " ", " " }, { " ", " ", " " }, { " ", " ", " " } }; // Opretter et tomt spilbræt.
     string msgWelcome = "Din modstander {randomBotName} har udfordret dig. Tryk ENTER for at få dine brikker...\n";
     string msgTokenX = "Du har fået kryds (X) derfor begynder du. Tryk ENTER for at begynde spillet...";
     string msgTokenO = "Du har fået bolle (O) derfor begynder {randomBotName}. Tryk ENTER for at begynde spillet...";
     int botTokenCount = 0;
     int playerTokenCount = 0;
     bool winCondition = false;
-    (int x, int y) removedToken = (-1, -1); // Bruger Tuple frem for Array da det gør min boolean condition i BotPlaceToken() mere læsbar.
+    (int x, int y) removedToken = (-1, -1); // husker den sidst flyttede briks position. Standard værdi findes ikke på brættet.
 
     // Velkomstbesked
     GameHeader();
@@ -180,7 +180,7 @@ internal class Program
     }
     ShowMainMenu();
 
-    void RunXO()
+    void RunXO() // Løkke der kører spillet indtil spillet er slut.
     {
       while (!winCondition)
       {
@@ -199,7 +199,7 @@ internal class Program
       Console.ReadKey();
     }
 
-    void BotTurn()
+    void BotTurn() // Styrer flow i computeren tur.
     {
       if (botTokenCount < 3)
       {
@@ -213,7 +213,7 @@ internal class Program
 
     }
 
-    void BotRemoveToken()
+    void BotRemoveToken() // Bruger rekursion til at søge igennem brættet indtil en computerbrik er fundet og fjernet.
     {
       int x = rnd.Next(0, 3);
       int y = rnd.Next(0, 3);
@@ -230,7 +230,7 @@ internal class Program
       }
     }
 
-    void BotPlaceToken()
+    void BotPlaceToken() // Bruger rekursion til at søge igennem brættet indtil en position - der er tom og ikke lige er blevet tømt - er funder og placer en brik.
     {
       int x = rnd.Next(0, 3);
       int y = rnd.Next(0, 3);
@@ -251,7 +251,7 @@ internal class Program
       }
     }
 
-    void PlayerTurn()
+    void PlayerTurn() // Styrer flow i spillerens tur.
     {
       if (playerTokenCount < 3)
       {
@@ -264,7 +264,7 @@ internal class Program
       }
     }
 
-    void PlayerRemoveToken()
+    void PlayerRemoveToken() // Spilleren skriver et koordinat og en brik fjernes på den tilsvarende position.
     {
       userInput = Console.ReadLine();
       int x = userInput[0] - 'a';
@@ -280,14 +280,10 @@ internal class Program
         playerTokenCount--;
         removedToken = (x, y);
       }
-      else
-      {
-        BotRemoveToken();
-      }
     }
 
-    void PlayerPlaceToken()
-    {
+    void PlayerPlaceToken() // Spilleren skriver et koordinat og en brik placeres på den tilsvarende position.
+        {
       userInput = Console.ReadLine();
       int x = userInput[0] - 'a';
       int y = userInput.Length > 1 ? int.Parse(userInput[1].ToString()) - 1 : -1;
@@ -353,13 +349,13 @@ internal class Program
             """);
     }
     ;
-    void EndGame()
+    void EndGame() // Tjekker alle mulige vinderkombinationer for tre ens brikker og sætter winCondition = true hvis spillet er vundet.
     {
       string a1 = gameBoard[0, 0], a2 = gameBoard[0, 1], a3 = gameBoard[0, 2], b1 = gameBoard[1, 0], b2 = gameBoard[1, 1], b3 = gameBoard[1, 2], c1 = gameBoard[2, 0], c2 = gameBoard[2, 1], c3 = gameBoard[2, 2];
-      var lines = new Dictionary<string, string[]>
+      var lines = new Dictionary<string, string[]> 
             {
-                { "a1:a3", new string[] { a1, a2, a3 } },
-                { "b1:b3", new string[] { b1, b2, b3 } },
+                { "a1:a3", new string[] { a1, a2, a3 } }, // Dicitonary med key:value par for hver vinderkombination. 
+                { "b1:b3", new string[] { b1, b2, b3 } }, 
                 { "c1:c3", new string[] { c1, c2, c3 } },
                 { "a1:c1", new string[] { a1, b1, c1 } },
                 { "a2:c2", new string[] { a2, b2, c2 } },
@@ -370,7 +366,7 @@ internal class Program
 
       foreach (var line in lines)
       {
-        int countX = 0;
+        int countX = 0; // Opretter og nulstiller tællervariabler for linje.
         int countO = 0;
 
         foreach (string position in line.Value)
