@@ -132,10 +132,10 @@ internal class Program
   // Af: Matias
   // ==================================================
   public static void XO()
-///<summary>
-///Programmet antager at spilleren laver legale træk og giver korrekt formaterede inputs.
-///For at placerer en spil brik indtaster spilleren et koordinate i formattet 'a1' (uden citering).
-///</summary>
+  ///<summary>
+  ///Programmet antager at spilleren laver legale træk og giver korrekt formaterede inputs.
+  ///For at placerer en spil brik indtaster spilleren et koordinate i formattet 'a1' (uden citering).
+  ///</summary>
   {
     string playerToken = rnd.Next(0, 2) == 0 ? "X" : "O"; // Gemmer spillerens type af spilbrik.
     string botToken = playerToken == "X" ? "O" : "X"; // Tildeler den anden brik til bot'en.
@@ -183,19 +183,19 @@ internal class Program
     {
       while (!winCondition)
       {
-            if (PlayerToken == "X")
-            {
-                PlayerTurn();
-                if (!winCondition) { BotTurn(); }
-            }
-            else
-            {
-                BotTurn();
-                if (!winCondition) { PlayerTurn(); }
-            }
+        if (playerToken == "X")
+        {
+          PlayerTurn();
+          if (!winCondition) { BotTurn(); }
+        }
+        else
+        {
+          BotTurn();
+          if (!winCondition) { PlayerTurn(); }
+        }
       }
-        Console.WriteLine("\nSpil afsluttet. Tryk ENTER for at fortsætte...");
-        Console.ReadKey();
+      Console.WriteLine("\nSpil afsluttet. Tryk ENTER for at fortsætte...");
+      Console.ReadKey();
     }
 
     void BotTurn()
@@ -237,17 +237,17 @@ internal class Program
       bool isEmpty = gameBoard[x, y] == " ";
       bool newPosition = removedToken.x != x && removedToken.y != y;
 
-        if (isEmpty && newPosition) 
-        {
-            gameBoard[x, y] = botToken;
-            botTokenCount++;
-            UpdateBoard();
-            EndGame();
-        }
-        else
-        {
-            BotPlaceToken();
-        }
+      if (isEmpty && newPosition)
+      {
+        gameBoard[x, y] = botToken;
+        botTokenCount++;
+        UpdateBoard();
+        EndGame();
+      }
+      else
+      {
+        BotPlaceToken();
+      }
     }
 
     void PlayerTurn()
@@ -291,17 +291,17 @@ internal class Program
       int x = userInput[0] - 'a';
       int y = userInput.Length > 1 ? int.Parse(userInput[1].ToString()) - 1 : -1;
 
-        if (userInput == "q")
-        {
-            Environment.Exit(0);
-        }
-        else
-        {
-            gameBoard[x, y] = playerToken;
-            playerTokenCount++;
-            UpdateBoard();
-            EndGame();
-        }
+      if (userInput == "q")
+      {
+        Environment.Exit(0);
+      }
+      else
+      {
+        gameBoard[x, y] = playerToken;
+        playerTokenCount++;
+        UpdateBoard();
+        EndGame();
+      }
     }
 
     void UpdateBoard() // Renderer spilbrættets data i et indrammet spilbræt.
@@ -353,9 +353,9 @@ internal class Program
     }
     ;
     void EndGame()
-        {
-            string a1 = gameBoard[0, 0], a2 = gameBoard[0, 1], a3 = gameBoard[0, 2], b1 = gameBoard[1, 0], b2 = gameBoard[1, 1], b3 = gameBoard[1, 2], c1 = gameBoard[2, 0], c2 = gameBoard[2, 1], c3 = gameBoard[2, 2];
-            var lines = new Dictionary<string, string[]>
+    {
+      string a1 = gameBoard[0, 0], a2 = gameBoard[0, 1], a3 = gameBoard[0, 2], b1 = gameBoard[1, 0], b2 = gameBoard[1, 1], b3 = gameBoard[1, 2], c1 = gameBoard[2, 0], c2 = gameBoard[2, 1], c3 = gameBoard[2, 2];
+      var lines = new Dictionary<string, string[]>
             {
                 { "a1:a3", new string[] { a1, a2, a3 } },
                 { "b1:b3", new string[] { b1, b2, b3 } },
@@ -561,7 +561,7 @@ internal class Program
       Console.WriteLine(line);
     }
     Console.WriteLine($"     HP [{new string('#', healthPlayerOne / 10),-10}]                            HP [{new string('#', healthPlayerTwo / 10),-10}]");
-    Console.WriteLine($"     {playerNames[0]}                                                            {playerNames[1]}");
+    Console.WriteLine($"     {playerNames[0],-20}                       {playerNames[1],-20}");
     Console.WriteLine();
   }
 
